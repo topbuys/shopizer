@@ -4,26 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.Valid;
 
 import javax.validation.constraints.NotEmpty;
 
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.core.model.catalog.product.image.ProductImage;
 import com.salesmanager.core.model.common.audit.AuditSection;
 import com.salesmanager.core.model.common.audit.Auditable;
 import com.salesmanager.core.model.generic.SalesManagerEntity;
@@ -61,9 +49,12 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
     
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private List<Category> categories = new ArrayList<Category>();
-    
-    @Column(name = "CATEGORY_IMAGE", length=100)
-    private String categoryImage;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "category")//cascade is set to remove because product save requires logic to create physical image first and then save the image id in the database, cannot be done in cascade
+    private Set<CategoryImage> categoryImages = new HashSet<>();
+
+//    @Column(name = "CATEGORY_IMAGE", length=100)
+//    private String categoryImage;
 
     @Column(name = "SORT_ORDER")
     private Integer sortOrder = 0;
@@ -124,12 +115,25 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
     }
 
 
-    public String getCategoryImage() {
-        return categoryImage;
+    public Set<CategoryImage> getImages() {
+        return categoryImages;
     }
 
-    public void setCategoryImage(String categoryImage) {
-        this.categoryImage = categoryImage;
+    public void setImages(Set<CategoryImage> images) {
+        this.categoryImages = images;
+    }
+
+    public CategoryImage getCategoryImage() {
+        CategoryImage categoryImage = null;
+        if(this.getImages()!=null && this.getImages().size()>0) {
+            for(CategoryImage image : categoryImages) {
+                if(image.isDefaultImage()) {
+                    categoryImage = image;
+                    break;
+                }
+            }
+        }
+        return categoryImage;
     }
 
     public Integer getSortOrder() {
