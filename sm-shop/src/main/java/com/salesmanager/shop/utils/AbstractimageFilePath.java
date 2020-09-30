@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
+import com.salesmanager.core.model.catalog.category.Category;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.model.catalog.product.Product;
@@ -162,9 +163,19 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 		}
 		return sb.toString();
 	}
-	
 
-	
+
+	/**
+	 * Builds category image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param category
+	 * @param imageName
+	 * @return
+	 */
+	public String buildCategorymageUtils(Category category, String imageName) {
+		return new StringBuilder().append(getBasePath()).append(Constants.CATEGORY_URI).append(Constants.SLASH).append(category.getCode()).append(Constants.SLASH)
+				.append(imageName).toString();
+	}
 	
 
 

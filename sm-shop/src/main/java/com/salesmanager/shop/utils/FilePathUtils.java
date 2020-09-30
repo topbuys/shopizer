@@ -135,6 +135,10 @@ public class FilePathUtils {
 		return "" + normalizePath(request.getContextPath());
 	}
 
+	public String buildRelativeCategoryUri(HttpServletRequest request) {
+		return "" + normalizePath(request.getContextPath());
+	}
+
 	/**
 	 * Access to the customer section
 	 */

@@ -316,6 +316,29 @@
 
 </tag>
 
+<tag>
+    <!-- Builds the product image URL -->
+    <name>categoryImage</name>
+    <tag-class>com.salesmanager.shop.tags.CategoryImageUrlTag</tag-class>
+    <body-content>scriptless</body-content>
+
+
+    <attribute>
+        <name>imageName</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+    </attribute>
+
+    <attribute>
+        <name>category</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>com.salesmanager.core.model.catalog.category.Category</type>
+    </attribute>
+
+
+</tag>
 
 
 

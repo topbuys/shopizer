@@ -1,5 +1,6 @@
 package com.salesmanager.shop.utils;
 
+import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -97,6 +98,15 @@ public interface ImageFilePath {
 	 * @return
 	 */
 	public String buildStaticContentFilePath(MerchantStore store, String fileName);
+
+	/**
+	 * Builds category image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param category
+	 * @param imageName
+	 * @return
+	 */
+	String buildCategorymageUtils(Category category, String imageName);
 
 
 }
