@@ -116,7 +116,7 @@
 				class="com.salesmanager.core.business.modules.cms.category.infinispan.CmsImageFileManagerImpl" factory-method="getInstance" >
 		<!-- internal implementation -->
 		<beans:property name="cacheManager">
-			<beans:ref bean="infinispanProductAssetsManager" />
+			<beans:ref bean="infinispanCategoryAssetsManager" />
 		</beans:property>
 	</beans:bean>
 
@@ -200,7 +200,7 @@
 
 	<!-- infinispan category STARTUP-->
 	<beans:bean id="infinispanCategoryAssetsManager"
-				class="com.salesmanager.core.business.modules.cms.impl.StoreCacheManagerImpl">
+				class="com.salesmanager.core.business.modules.cms.impl.CategoryCacheManagerImpl">
 		<beans:constructor-arg value="${config.cms.category.location}"/><!-- location -->
 		<beans:constructor-arg value="category-merchant"/><!-- root -->
 	</beans:bean>
