@@ -31,7 +31,7 @@ public class CategoryImage extends SalesManagerEntity<Long, CategoryImage> {
     private String categoryImage;
 
     @Column(name = "DEFAULT_IMAGE")
-    private boolean defaultImage = true;
+    private boolean defaultImage = false;
 
     @Transient
     private InputStream image = null;

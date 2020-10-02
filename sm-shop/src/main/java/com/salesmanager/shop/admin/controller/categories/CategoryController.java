@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.core.model.catalog.product.image.ProductImage;
+import com.salesmanager.core.model.catalog.product.image.ProductImageDescription;
+import com.salesmanager.core.model.content.FileContentType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +107,14 @@ public class CategoryController {
             descriptions.add(description);
         }
 
+        for(CategoryImage image : category.get().getImages()) {
+            if(image.isDefaultImage()) {
+                adminCategory.setCategoryImage(image);
+                break;
+            }
+
+        }
+
         adminCategory.setDescriptions(descriptions);
         adminCategory.setCategory(category.get());
 
@@ -158,6 +170,23 @@ public class CategoryController {
                 category.getCategory().setLineage("/" + category.getCategory().getId() + "/");
                 category.getCategory().setDepth(0);
             }
+        }
+        if(category.getImage()!=null && !category.getImage().isEmpty()) {
+
+            String imageName = category.getImage().getOriginalFilename();
+
+            CategoryImage categoryImage = new CategoryImage();
+            categoryImage.setDefaultImage(true);
+            categoryImage.setImage(category.getImage().getInputStream());
+            categoryImage.setCategoryImage(imageName);
+
+            categoryImage.setCategory(category.getCategory());
+
+            category.setCategoryImage(categoryImage);
+
+            category.getCategory().getImages().add(categoryImage);
+
+
         }
         category.getCategory().getAuditSection().setModifiedBy(request.getRemoteUser());
         categoryService.saveOrUpdate(category.getCategory());
@@ -353,6 +382,63 @@ public class CategoryController {
         String returnString = resp.toJSONString();
         return new ResponseEntity<>(returnString, httpHeaders, HttpStatus.OK);
     }
+
+    /*@PreAuthorize("hasRole('PRODUCTS')")
+    @RequestMapping(value="/admin/categories/removeImage.html", method=RequestMethod.POST)
+    public @ResponseBody ResponseEntity<String> removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+        AjaxResponse resp = new AjaxResponse();
+
+        try {
+
+
+
+            contentService.removeFile(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
+
+            store.setStoreLogo(null);
+            merchantStoreService.update(store);
+
+
+        } catch (Exception e) {
+            LOGGER.error("Error while deleting product", e);
+            resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+            resp.setErrorMessage(e);
+        }
+
+        String returnString = resp.toJSONString();
+        final HttpHeaders httpHeaders= new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
+
+
+
+        try {
+
+            Long id = Long.parseLong(iid);
+            ProductImage productImage = productImageService.getById(id);
+            if(productImage==null || productImage.getProduct().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+
+                resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+                resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+
+            } else {
+
+                productImageService.removeProductImage(productImage);
+                resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+            }
+
+
+        } catch (Exception e) {
+            LOGGER.error("Error while deleting product", e);
+            resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+            resp.setErrorMessage(e);
+        }
+
+        String returnString = resp.toJSONString();
+        final HttpHeaders httpHeaders= new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
+    }*/
 
     private ResponseEntity<String> getResponseAjax(AjaxResponse resp, HttpHeaders httpHeaders, int codeAlreadyExist) {
         resp.setStatus(codeAlreadyExist);
