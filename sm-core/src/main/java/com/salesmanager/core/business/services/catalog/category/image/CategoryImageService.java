@@ -37,6 +37,16 @@ public interface CategoryImageService extends SalesManagerEntityService<Long, Ca
 	OutputContentFile getCategoryImage(CategoryImage categoryImage)
 			throws ServiceException;
 
+	/**
+	 * Returns an image file from required identifier. This method is
+	 * used by the image servlet
+	 * @param categoryCode
+	 * @param fileName
+	 * @return
+	 * @throws ServiceException
+	 */
+	OutputContentFile getCategoryImage(String categoryCode, String fileName) throws ServiceException;
+
 	void removeCategoryImage(CategoryImage categoryImage) throws ServiceException;
 
 	void saveOrUpdate(CategoryImage categoryImage) throws ServiceException;

@@ -69,6 +69,12 @@ public class CategoryImageServiceImpl extends SalesManagerEntityServiceImpl<Long
     }
 
     @Override
+    public OutputContentFile getCategoryImage(String categoryCode, String imageName) throws ServiceException {
+        OutputContentFile outputImage = categoryFileManager.getCategoryImage(categoryCode, imageName);
+        return outputImage;
+    }
+
+    @Override
     public void removeCategoryImage(CategoryImage categoryImage) throws ServiceException {
 
     }

@@ -11,4 +11,5 @@ import com.salesmanager.core.model.content.OutputContentFile;
 
 public interface CategoryImageGet {
     OutputContentFile getCategoryImage(CategoryImage categoryImage) throws ServiceException;
+    OutputContentFile getCategoryImage(String categoryCode, String imageName) throws ServiceException;
 }

@@ -8,9 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import com.salesmanager.core.business.services.catalog.category.image.CategoryImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,9 @@ public class ImagesController {
 	
 	@Inject
 	private ProductImageService productImageService;
+
+	@Autowired
+	private CategoryImageService categoryImageService;
 	
 	private byte[] tempImage = null;
 	
@@ -61,7 +66,7 @@ public class ImagesController {
 	
 	/**
 	 * Logo, content image
-	 * @param storeId
+	 * @param storeCode
 	 * @param imageType (LOGO, CONTENT, IMAGE)
 	 * @param imageName
 	 * @return
@@ -250,5 +255,37 @@ public class ImagesController {
 		}
 
 	}
+
+	/**
+	 * Exclusive method for dealing with category images
+	 * @param categoryCode
+	 * @param imageName
+	 * @param extension
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping("/static/category/{categoryCode}/{imageName}.{extension}")
+	public @ResponseBody byte[] printImage(@PathVariable final String categoryCode, @PathVariable final String imageName, @PathVariable final String extension, HttpServletRequest request) throws IOException {
+
+		// category image
+		// example category imagee -> /static/category/TB12345/category1.jpg
+
+
+		OutputContentFile image = null;
+		try {
+			image = categoryImageService.getCategoryImage(categoryCode, new StringBuilder().append(imageName).append(".").append(extension).toString());
+		} catch (ServiceException e) {
+			LOGGER.error("Cannot retrieve image " + imageName, e);
+		}
+		if(image!=null) {
+			return image.getFile().toByteArray();
+		} else {
+			//empty image placeholder
+			return tempImage;
+		}
+
+	}
+
 
 }

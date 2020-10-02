@@ -130,7 +130,12 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
 
   @Override
   public OutputContentFile getCategoryImage(CategoryImage categoryImage) throws ServiceException {
-    return getCategoryImage(categoryImage.getCategory().getCode(), categoryImage.getCategoryImage());
+    return this.getCategoryImageContent(categoryImage.getCategory().getCode(), categoryImage.getCategoryImage());
+  }
+
+  @Override
+  public OutputContentFile getCategoryImage(String categoryCode, String imageName) throws ServiceException {
+    return this.getCategoryImageContent(categoryCode, imageName);
   }
 
 //  @Override
@@ -163,8 +168,7 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
 //  }
 
 
-  private OutputContentFile getCategoryImage(String categoryCode,
-    String imageName) throws ServiceException {
+  private OutputContentFile getCategoryImageContent(String categoryCode, String imageName) throws ServiceException {
 
     if (cacheManager.getTreeCache() == null) {
       throw new ServiceException(
