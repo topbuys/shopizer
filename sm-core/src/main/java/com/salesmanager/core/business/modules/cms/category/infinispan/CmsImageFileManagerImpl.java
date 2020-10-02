@@ -107,7 +107,7 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
       nodePath.append(categoryImage.getCategory().getCode())
               .append(Constants.SLASH);
 
-      Node<String, Object> productNode = this.getNode(nodePath.toString());
+      Node<String, Object> categoryNode = this.getNode(nodePath.toString());
 
 
       InputStream isFile = contentImage.getFile();
@@ -117,7 +117,7 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
 
 
       // object for a given product containing all images
-      productNode.put(contentImage.getFileName(), output.toByteArray());
+      categoryNode.put(contentImage.getFileName(), output.toByteArray());
 
 
 
