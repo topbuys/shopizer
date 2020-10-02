@@ -127,93 +127,9 @@ public class CategoryFileManagerImpl extends CategoryFileManager {
     return getImage.getCategoryImage(categoryCode, imageName);
   }
 
-//
-//
-//  @Override
-//  public List<OutputContentFile> getImages(final String merchantStoreCode,
-//      FileContentType imageContentType) throws ServiceException {
-//    // will return original
-//    return getImage.getImages(merchantStoreCode, FileContentType.PRODUCT);
-//  }
-//
-//  @Override
-//  public List<OutputContentFile> getImages(Product product) throws ServiceException {
-//    return getImage.getImages(product);
-//  }
-//
-//
-//
-//  @Override
-//  public void removeProductImage(ProductImage productImage) throws ServiceException {
-//
-//    this.removeImage.removeProductImage(productImage);
-//
-//    /*
-//     * ProductImage large = new ProductImage(); large.setProduct(productImage.getProduct());
-//     * large.setProductImage("L" + productImage.getProductImage());
-//     *
-//     * this.removeImage.removeProductImage(large);
-//     *
-//     * ProductImage small = new ProductImage(); small.setProduct(productImage.getProduct());
-//     * small.setProductImage("S" + productImage.getProductImage());
-//     *
-//     * this.removeImage.removeProductImage(small);
-//     */
-//
-//  }
-//
-//
-//  @Override
-//  public void removeProductImages(Product product) throws ServiceException {
-//
-//    this.removeImage.removeProductImages(product);
-//
-//  }
-//
-//
-//  @Override
-//  public void removeImages(final String merchantStoreCode) throws ServiceException {
-//
-//    this.removeImage.removeImages(merchantStoreCode);
-//
-//  }
-//
-//
-//  public ProductImagePut getUploadImage() {
-//    return uploadImage;
-//  }
-//
-//
-//  public void setUploadImage(ProductImagePut uploadImage) {
-//    this.uploadImage = uploadImage;
-//  }
-//
-//
-//
-//  public ProductImageGet getGetImage() {
-//    return getImage;
-//  }
-//
-//
-//  public void setGetImage(ProductImageGet getImage) {
-//    this.getImage = getImage;
-//  }
-//
-//
-//  @Override
-//  public OutputContentFile getProductImage(String merchantStoreCode, String productCode,
-//      String imageName) throws ServiceException {
-//    return getImage.getProductImage(merchantStoreCode, productCode, imageName);
-//  }
-//
-//
-//
-//  @Override
-//  public OutputContentFile getProductImage(String merchantStoreCode, String productCode,
-//      String imageName, ProductImageSize size) throws ServiceException {
-//    return getImage.getProductImage(merchantStoreCode, productCode, imageName, size);
-//  }
-
-
+  @Override
+  public void removeCategoryImage(CategoryImage categoryImage) throws ServiceException {
+    this.removeImage.removeCategoryImage(categoryImage);
+  }
 
 }

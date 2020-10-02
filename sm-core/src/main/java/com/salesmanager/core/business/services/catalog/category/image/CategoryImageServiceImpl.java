@@ -10,6 +10,7 @@ import com.salesmanager.core.model.catalog.product.file.ProductImageSize;
 import com.salesmanager.core.model.catalog.product.image.ProductImage;
 import com.salesmanager.core.model.content.ImageContentFile;
 import com.salesmanager.core.model.content.OutputContentFile;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -76,7 +77,14 @@ public class CategoryImageServiceImpl extends SalesManagerEntityServiceImpl<Long
 
     @Override
     public void removeCategoryImage(CategoryImage categoryImage) throws ServiceException {
+        if(!StringUtils.isBlank(categoryImage.getCategoryImage())) {
+            categoryFileManager.removeCategoryImage(categoryImage);
+        }
 
+        CategoryImage ci = this.getById(categoryImage.getId());
+
+
+        this.delete(ci);
     }
 
     @Override

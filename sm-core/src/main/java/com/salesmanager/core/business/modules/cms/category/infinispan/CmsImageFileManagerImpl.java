@@ -138,34 +138,31 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
     return this.getCategoryImageContent(categoryCode, imageName);
   }
 
-//  @Override
-//  public void removeProductImage(ProductImage productImage) throws ServiceException {
-//
-//    if (cacheManager.getTreeCache() == null) {
-//      throw new ServiceException(
-//          "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()");
-//    }
-//
-//    try {
-//
-//
-//      StringBuilder nodePath = new StringBuilder();
-//      nodePath.append(productImage.getProduct().getMerchantStore().getCode())
-//          .append(Constants.SLASH).append(productImage.getProduct().getSku());
-//
-//
-//      Node<String, Object> productNode = this.getNode(nodePath.toString());
-//      productNode.remove(productImage.getProductImage());
-//
-//
-//
-//    } catch (Exception e) {
-//      throw new ServiceException(e);
-//    } finally {
-//
-//    }
-//
-//  }
+  @Override
+  public void removeCategoryImage(CategoryImage categoryImage) throws ServiceException {
+    if (cacheManager.getTreeCache() == null) {
+      throw new ServiceException(
+          "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()");
+    }
+
+    try {
+
+
+      StringBuilder nodePath = new StringBuilder();
+      nodePath.append(categoryImage.getCategory().getCode());
+
+
+      Node<String, Object> categoryNode = this.getNode(nodePath.toString());
+      categoryNode.remove(categoryImage.getCategoryImage());
+
+
+
+    } catch (Exception e) {
+      throw new ServiceException(e);
+    } finally {
+
+    }
+  }
 
 
   private OutputContentFile getCategoryImageContent(String categoryCode, String imageName) throws ServiceException {
@@ -259,4 +256,5 @@ public class CmsImageFileManagerImpl implements CategoryAssetsManager {
   public String getRootName() {
     return rootName;
   }
+
 }
