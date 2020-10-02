@@ -122,6 +122,11 @@ public class CategoryFileManagerImpl extends CategoryFileManager {
     return getImage.getCategoryImage(categoryImage);
   }
 
+  @Override
+  public OutputContentFile getCategoryImage(String categoryCode, String imageName) throws ServiceException {
+    return getImage.getCategoryImage(categoryCode, imageName);
+  }
+
 //
 //
 //  @Override
