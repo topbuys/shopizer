@@ -3,6 +3,12 @@ package com.salesmanager.shop.mapper.catalog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.shop.model.catalog.category.ReadableCategoryImage;
+import com.salesmanager.shop.model.catalog.product.ReadableImage;
+import com.salesmanager.shop.utils.ImageFilePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +24,16 @@ import com.salesmanager.shop.model.catalog.category.ReadableCategoryFull;
 public class ReadableCategoryMapper implements Mapper<Category, ReadableCategory> {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(ReadableCategoryMapper.class);
+
+  private ImageFilePath imageUtils;
+
+  public ImageFilePath getimageUtils() {
+    return imageUtils;
+  }
+
+  public void setimageUtils(ImageFilePath imageUtils) {
+    this.imageUtils = imageUtils;
+  }
 
   @Override
   public ReadableCategory convert(Category source, MerchantStore store, Language language) {
@@ -39,6 +55,31 @@ public class ReadableCategoryMapper implements Mapper<Category, ReadableCategory
     target.setSortOrder(source.getSortOrder());
     target.setVisible(source.isVisible());
     target.setFeatured(source.isFeatured());
+
+    Set<CategoryImage> images = source.getImages();
+    if(images!=null && images.size()>0) {
+      List<ReadableCategoryImage> imageList = new ArrayList<ReadableCategoryImage>();
+
+      String contextPath = imageUtils.getContextPath();
+
+      for(CategoryImage img : images) {
+        ReadableCategoryImage catImage = new ReadableCategoryImage();
+        catImage.setImageName(img.getCategoryImage());
+        catImage.setDefaultImage(img.isDefaultImage());
+
+        StringBuilder imgPath = new StringBuilder();
+        imgPath.append(contextPath).append(imageUtils.buildCategorymageUtils(source, img.getCategoryImage()));
+
+        catImage.setImageUrl(imgPath.toString());
+
+        if(catImage.isDefaultImage()) {
+          target.setImage(catImage);
+        }
+
+        imageList.add(catImage);
+      }
+      target.setImages(imageList);
+    }
     return target;
   }
 
@@ -79,7 +120,9 @@ public class ReadableCategoryMapper implements Mapper<Category, ReadableCategory
     return desc;
   }
 
-
+//  private ReadableCategoryImage convertImage(CategoryImage categoryImage) {
+//
+//  }
   private Optional<com.salesmanager.shop.model.catalog.category.Category> createParentCategory(
       Category source) {
     return Optional.ofNullable(source.getParent()).map(parentValue -> {

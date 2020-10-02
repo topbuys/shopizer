@@ -1,5 +1,10 @@
 package com.salesmanager.shop.populator.catalog;
 
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.core.model.catalog.product.image.ProductImage;
+import com.salesmanager.shop.model.catalog.category.ReadableCategoryImage;
+import com.salesmanager.shop.model.catalog.product.ReadableImage;
+import com.salesmanager.shop.utils.ImageFilePath;
 import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.exception.ConversionException;
@@ -10,8 +15,22 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class ReadableCategoryPopulator extends
         AbstractDataPopulator<Category, ReadableCategory> {
+
+    private ImageFilePath imageUtils;
+
+    public ImageFilePath getimageUtils() {
+        return imageUtils;
+    }
+
+    public void setimageUtils(ImageFilePath imageUtils) {
+        this.imageUtils = imageUtils;
+    }
 
     @Override
     public ReadableCategory populate(final Category source,
@@ -65,6 +84,31 @@ public class ReadableCategoryPopulator extends
         target.setSortOrder(source.getSortOrder());
         target.setVisible(source.isVisible());
         target.setFeatured(source.isFeatured());
+
+        Set<CategoryImage> images = source.getImages();
+        if(images!=null && images.size()>0) {
+            List<ReadableCategoryImage> imageList = new ArrayList<ReadableCategoryImage>();
+
+            String contextPath = imageUtils.getContextPath();
+
+            for(CategoryImage img : images) {
+                ReadableCategoryImage catImage = new ReadableCategoryImage();
+                catImage.setImageName(img.getCategoryImage());
+                catImage.setDefaultImage(img.isDefaultImage());
+
+                StringBuilder imgPath = new StringBuilder();
+                imgPath.append(contextPath).append(imageUtils.buildCategorymageUtils(source, img.getCategoryImage()));
+
+                catImage.setImageUrl(imgPath.toString());
+
+                if(catImage.isDefaultImage()) {
+                    target.setImage(catImage);
+                }
+
+                imageList.add(catImage);
+            }
+            target.setImages(imageList);
+        }
 
         return target;
 
