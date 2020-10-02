@@ -2,12 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
+
 <%@ page session="false" %>
 
 <script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 
 	$(function(){
 		$('#order').numeric();
@@ -43,7 +45,41 @@
 			$('.btn').addClass('disabled');
 		}
 	}
-	</script>
+
+    function removeImage(imageId){
+        $("#store.error").show();
+        $.ajax({
+            type: 'POST',
+            url: '<c:url value="/admin/products/product/removeImage.html"/>',
+            data: 'imageId=' + imageId,
+            dataType: 'json',
+            success: function(response){
+
+                var status = isc.XMLTools.selectObjects(response, "/response/status");
+                if(status==0 || status ==9999) {
+
+                    //remove delete
+                    $("#imageControlRemove").html('');
+                    //add field
+                    $("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+                    $(".alert-success").show();
+
+                } else {
+
+                    //display message
+                    $(".alert-error").show();
+                }
+
+
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                alert('error ' + errorThrown);
+            }
+
+        });
+    }
+</script>
+
 <div class="tabbable">
 					<jsp:include page="/common/adminTabs.jsp" />
   					 <div class="tab-content">
@@ -62,7 +98,7 @@
 				<br/>
 				<c:url var="categorySave" value="/admin/categories/save.html"/>
 
-				<form:form method="POST" modelAttribute="category" action="${categorySave}">
+				<form:form method="POST" enctype="multipart/form-data" modelAttribute="category" action="${categorySave}">
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
       			 <div class="control-group">
@@ -179,11 +215,28 @@
                         </div>
                   </div>
                   <form:hidden path="category.id" />
+
+                <div class="control-group">
+                    <label><s:message code="label.category.image" text="Image"/>&nbsp;<c:if test="${category.categoryImage.categoryImage!=null && category.categoryImage.categoryImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${category.categoryImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+                    <div class="controls" id="imageControl">
+                        <c:choose>
+                            <c:when test="${category.categoryImage.categoryImage==null || category.categoryImage.categoryImage==''}">
+                                <input class="input-file" id="image" name="image" type="file">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<sm:categoryImage imageName="${category.categoryImage.categoryImage}" category="${category.category}"/>" width="200"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+<%--                <form:hidden path="categoryImage.categoryImage" />--%>
+
 			      <div class="form-actions">
                   		<div class="pull-right">
                   			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
                   		</div>
             	 </div>
+
             	 </form:form>
       					</div>
    					</div>

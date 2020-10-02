@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.services.catalog.category;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +10,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.salesmanager.core.business.services.catalog.category.image.CategoryImageService;
+import com.salesmanager.core.business.services.catalog.product.image.ProductImageService;
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.core.model.catalog.product.image.ProductImage;
+import com.salesmanager.core.model.content.FileContentType;
+import com.salesmanager.core.model.content.ImageContentFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +50,8 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
   @Inject
   private CategoryDescriptionRepository categoryDescriptionRepository;
 
-
+  @Inject
+  private CategoryImageService categoryImageService;
 
   @Inject
   public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -110,6 +118,34 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 		}
 
+		/**
+		 * Image creation needs extra service to save the file in the CMS
+		 */
+		Set<CategoryImage> images = category.getImages();
+
+		try {
+			if(images!=null && images.size()>0) {
+				for(CategoryImage image : images) {
+					if (image.getImage() != null && (image.getId() == null || image.getId() == 0L)) {
+						image.setCategory(category);
+
+						InputStream inputStream = image.getImage();
+						ImageContentFile cmsContentImage = new ImageContentFile();
+						cmsContentImage.setFileName(image.getCategoryImage());
+						cmsContentImage.setFile(inputStream);
+						cmsContentImage.setFileContentType(FileContentType.IMAGE);
+
+						categoryImageService.addCategoryImage(category, image, cmsContentImage);
+					} else {
+						if (image.getId() != null) {
+							categoryImageService.save(image);
+						}
+					}
+				}
+			}
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
