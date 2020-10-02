@@ -50,7 +50,7 @@
         $("#store.error").show();
         $.ajax({
             type: 'POST',
-            url: '<c:url value="/admin/products/product/removeImage.html"/>',
+            url: '<c:url value="/admin/categories/removeImage.html"/>',
             data: 'imageId=' + imageId,
             dataType: 'json',
             success: function(response){
@@ -100,6 +100,7 @@
 
 				<form:form method="POST" enctype="multipart/form-data" modelAttribute="category" action="${categorySave}">
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
+                    <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
       			 <div class="control-group">
                         <label><s:message code="label.category.parentcategory" text="Category vsible"/></label>
