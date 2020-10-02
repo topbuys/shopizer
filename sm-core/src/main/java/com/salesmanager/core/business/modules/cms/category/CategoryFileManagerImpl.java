@@ -101,7 +101,7 @@ public class CategoryFileManagerImpl extends CategoryFileManager {
 
 
       // upload original -- L
-      contentImage.setFileContentType(FileContentType.PRODUCTLG);
+      contentImage.setFileContentType(FileContentType.CATEGORY);
       uploadImage.addCategoryImage(categoryImage, contentImage);
 
 
