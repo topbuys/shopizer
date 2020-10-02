@@ -1,23 +1,5 @@
 package com.salesmanager.shop.store.facade.category;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang.Validate;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
@@ -30,6 +12,7 @@ import com.salesmanager.core.model.catalog.product.attribute.ProductOptionValue;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.mapper.Mapper;
+import com.salesmanager.shop.mapper.catalog.ReadableCategoryMapper;
 import com.salesmanager.shop.model.catalog.category.PersistableCategory;
 import com.salesmanager.shop.model.catalog.category.ReadableCategory;
 import com.salesmanager.shop.model.catalog.category.ReadableCategoryList;
@@ -43,6 +26,17 @@ import com.salesmanager.shop.store.api.exception.ResourceNotFoundException;
 import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.api.exception.UnauthorizedException;
 import com.salesmanager.shop.store.controller.category.facade.CategoryFacade;
+import com.salesmanager.shop.utils.ImageFilePath;
+import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.inject.Inject;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service(value = "categoryFacade")
 public class CategoryFacadeImpl implements CategoryFacade {
@@ -61,6 +55,11 @@ public class CategoryFacadeImpl implements CategoryFacade {
 
 	@Inject
 	private ProductAttributeService productAttributeService;
+
+	@Inject
+	@Qualifier("img")
+	private ImageFilePath imageUtils;
+
 
 	private static final String FEATURED_CATEGORY = "featured";
 	private static final String VISIBLE_CATEGORY = "visible";
@@ -248,6 +247,8 @@ public class CategoryFacadeImpl implements CategoryFacade {
 
 			StringBuilder lineage = new StringBuilder().append(categoryModel.getLineage());
 
+			((ReadableCategoryMapper)categoryReadableCategoryConverter).setimageUtils(imageUtils);
+
 			ReadableCategory readableCategory = categoryReadableCategoryConverter.convert(categoryModel, store,
 					language);
 
@@ -313,6 +314,9 @@ public class CategoryFacadeImpl implements CategoryFacade {
 		ReadableCategory readableCategory = new ReadableCategory();
 
 		Category category = categoryService.getByCode(store, code);
+
+		categoryPopulator.setimageUtils(imageUtils);
+
 		categoryPopulator.populate(category, readableCategory, store, language);
 
 		return readableCategory;

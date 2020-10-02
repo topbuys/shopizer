@@ -13,6 +13,8 @@ public class ReadableCategory extends CategoryEntity {
 	private int productCount;
 	private String store;
 	private List<ReadableCategory> children = new ArrayList<ReadableCategory>();
+	private ReadableCategoryImage image;
+	private List<ReadableCategoryImage> images;
 	
 	
 	public void setDescription(CategoryDescription description) {
@@ -41,4 +43,19 @@ public class ReadableCategory extends CategoryEntity {
 		this.store = store;
 	}
 
+	public ReadableCategoryImage getImage() {
+		return image;
+	}
+
+	public void setImage(ReadableCategoryImage image) {
+		this.image = image;
+	}
+
+	public List<ReadableCategoryImage> getImages() {
+		return images;
+	}
+
+	public void setImages(List<ReadableCategoryImage> images) {
+		this.images = images;
+	}
 }
