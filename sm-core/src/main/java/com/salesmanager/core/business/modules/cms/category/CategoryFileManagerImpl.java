@@ -106,6 +106,7 @@ public class CategoryFileManagerImpl extends CategoryFileManager {
 
 
     } catch (Exception e) {
+      LOGGER.error("Error while saving Category image:  " + categoryImage.getCategoryImage(), e);
       throw new ServiceException(e);
     } finally {
       try {
@@ -129,7 +130,7 @@ public class CategoryFileManagerImpl extends CategoryFileManager {
 
   @Override
   public void removeCategoryImage(CategoryImage categoryImage) throws ServiceException {
-    this.removeImage.removeCategoryImage(categoryImage);
+    removeImage.removeCategoryImage(categoryImage);
   }
 
 }
