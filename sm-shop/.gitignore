@@ -1,3 +1,4 @@
 /target/
 /src/main/resources/database.properties
-/files/category/CategoryRepository.dat
+*.db
+/files/
