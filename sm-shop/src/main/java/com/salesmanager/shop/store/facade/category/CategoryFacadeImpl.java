@@ -261,6 +261,8 @@ public class CategoryFacadeImpl implements CategoryFacade {
 
 			addChildToParent(readableCategory, childrenCats);
 			return readableCategory;
+		} catch (ResourceNotFoundException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceRuntimeException(e);
 		}
