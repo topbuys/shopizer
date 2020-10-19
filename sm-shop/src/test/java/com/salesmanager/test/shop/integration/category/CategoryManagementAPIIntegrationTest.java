@@ -1,8 +1,7 @@
 package com.salesmanager.test.shop.integration.category;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import java.util.ArrayList;
@@ -60,6 +59,64 @@ public class CategoryManagementAPIIntegrationTest extends ServicesTestSupport {
             assertNotNull(categories);
         }
     }
+
+    /**
+     * Read - GET a category by id
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getCategoryById_returnsCategorySuccessfully() throws Exception {
+
+        PersistableCategory newCategory = new PersistableCategory();
+        newCategory.setCode("javascript");
+        newCategory.setSortOrder(1);
+        newCategory.setVisible(true);
+        newCategory.setDepth(4);
+
+        Category parent = new Category();
+
+        newCategory.setParent(parent);
+
+        CategoryDescription description = new CategoryDescription();
+        description.setLanguage("en");
+        description.setName("Javascript");
+        description.setFriendlyUrl("javascript");
+        description.setTitle("Javascript");
+
+        List<CategoryDescription> descriptions = new ArrayList<>();
+        descriptions.add(description);
+
+        newCategory.setDescriptions(descriptions);
+
+        final ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        final String json = writer.writeValueAsString(newCategory);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(json, getHeader());
+
+        ResponseEntity<PersistableCategory> postResponse = testRestTemplate.postForEntity("/api/v1/private/category", httpEntity, PersistableCategory.class);
+        PersistableCategory postedCat = postResponse.getBody();
+
+
+        final ResponseEntity<ReadableCategory> response = testRestTemplate.exchange(String.format("/api/v1/category/" + postedCat.getId()), HttpMethod.GET,
+                null, ReadableCategory.class);
+        ReadableCategory retrievedCat = response.getBody();
+
+        assertNotNull(response.getBody());
+        assertEquals(postedCat.getId(), retrievedCat.getId());
+        assertEquals(postedCat.getCode(), retrievedCat.getCode());
+    }
+
+
+    @Test
+    public void getCategoryById_retruns404NotFound() throws Exception {
+
+        final ResponseEntity<ReadableCategory> response = testRestTemplate.exchange(String.format("/api/v1/category/" + -1L), HttpMethod.GET,
+                null, ReadableCategory.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
 
     /**
      * Creates - POST a category for a given store
