@@ -109,44 +109,16 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 		// save or update (persist and attach entities
 		if (category.getId() != null && category.getId() > 0) {
-
 			super.update(category);
-
+			saveProductImageList(category.getImages(), category);
 		} else {
-
+			Set<CategoryImage> images = new HashSet<>(category.getImages());
 			this.create(category);
-
-		}
-
-		/**
-		 * Image creation needs extra service to save the file in the CMS
-		 */
-		Set<CategoryImage> images = category.getImages();
-
-		try {
-			if(images!=null && images.size()>0) {
-				for(CategoryImage image : images) {
-					if (image.getImage() != null && (image.getId() == null || image.getId() == 0L)) {
-						image.setCategory(category);
-
-						InputStream inputStream = image.getImage();
-						ImageContentFile cmsContentImage = new ImageContentFile();
-						cmsContentImage.setFileName(image.getCategoryImage());
-						cmsContentImage.setFile(inputStream);
-						cmsContentImage.setFileContentType(FileContentType.IMAGE);
-
-						categoryImageService.addCategoryImage(category, image, cmsContentImage);
-					} else {
-						if (image.getId() != null) {
-							categoryImageService.save(image);
-						}
-					}
-				}
-			}
-		} catch(Exception e) {
-			throw new ServiceException(e);
+			saveProductImageList(images, category);
 		}
 	}
+
+
 
 	@Override
 	public List<Category> getListByLineage(MerchantStore store, String lineage) throws ServiceException {
@@ -467,4 +439,32 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		return categoryRepository.findById(merchantId, categoryid, language);
 	}
 
+	/**
+	 * Image creation needs extra service to save the file in the CMS
+	 */
+	private void saveProductImageList(Set<CategoryImage> categoryImages, Category category) throws ServiceException {
+		try {
+			if(categoryImages!=null && categoryImages.size()>0) {
+				for(CategoryImage image : categoryImages) {
+					if (image.getImage() != null && (image.getId() == null || image.getId() == 0L)) {
+						image.setCategory(category);
+
+						InputStream inputStream = image.getImage();
+						ImageContentFile cmsContentImage = new ImageContentFile();
+						cmsContentImage.setFileName(image.getCategoryImage());
+						cmsContentImage.setFile(inputStream);
+						cmsContentImage.setFileContentType(FileContentType.IMAGE);
+
+						categoryImageService.addCategoryImage(category, image, cmsContentImage);
+					} else {
+						if (image.getId() != null) {
+							categoryImageService.save(image);
+						}
+					}
+				}
+			}
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
+	}
 }
