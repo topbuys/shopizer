@@ -85,7 +85,6 @@ public class DataConfiguration {
     }
 
 	@Bean
-    @DependsOn("flyway")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -124,14 +123,5 @@ public class DataConfiguration {
 		txManager.setEntityManagerFactory(entityManagerFactory);
 		return txManager;
 	}
-
-    @ConditionalOnBean(DataSource.class)
-    @ConditionalOnProperty(prefix = "flyway", name = "enabled", matchIfMissing = true)
-    @Bean(initMethod = "migrate")
-    public Flyway flyway() {
-        Flyway flyway = Flyway.configure().dataSource(dataSource()).load();
-        flyway.repair();
-        return flyway;
-    }
 
 }

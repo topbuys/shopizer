@@ -2,6 +2,7 @@ package com.salesmanager.shop.admin.controller.categories;
 
 import com.salesmanager.shop.application.ShopApplication;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = ShopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
+@Ignore
 public class CategoryControllerTest {
 
     @Autowired
