@@ -1,19 +1,24 @@
 package com.salesmanager.core.business.configuration;
 
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-
+import com.zaxxer.hikari.HikariDataSource;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.zaxxer.hikari.HikariDataSource;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
+import java.util.Properties;
 
 
 @Configuration
@@ -34,7 +39,6 @@ public class DataConfiguration {
     @Value("${db.password}")
     private String password;
 
-    
     /**
      * Other connection properties
      */
@@ -76,11 +80,12 @@ public class DataConfiguration {
     	dataSource.setIdleTimeout(minPoolSize);
     	dataSource.setMaximumPoolSize(maxPoolSize);
     	dataSource.setConnectionTestQuery(testQuery);
-    	
+
     	return dataSource;
     }
 
 	@Bean
+    @DependsOn("flyway")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -119,5 +124,14 @@ public class DataConfiguration {
 		txManager.setEntityManagerFactory(entityManagerFactory);
 		return txManager;
 	}
+
+    @ConditionalOnBean(DataSource.class)
+    @ConditionalOnProperty(prefix = "flyway", name = "enabled", matchIfMissing = true)
+    @Bean(initMethod = "migrate")
+    public Flyway flyway() {
+        Flyway flyway = Flyway.configure().dataSource(dataSource()).load();
+        flyway.repair();
+        return flyway;
+    }
 
 }
