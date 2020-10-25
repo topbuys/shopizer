@@ -69,7 +69,7 @@ public class CategoryManagementAPIIntegrationTest extends ServicesTestSupport {
     public void getCategoryById_returnsCategorySuccessfully() throws Exception {
 
         PersistableCategory newCategory = new PersistableCategory();
-        newCategory.setCode("javascript");
+        newCategory.setCode("cars");
         newCategory.setSortOrder(1);
         newCategory.setVisible(true);
         newCategory.setDepth(4);
