@@ -1,5 +1,6 @@
 package com.salesmanager.core.model.customer;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,7 +148,14 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 		
 	})
 	private List<Group> groups = new ArrayList<Group>();
-	
+
+	@Column(name = "CUTOMER_IMAGE")
+	private String customerImage;
+
+	@JsonIgnore
+	@Transient
+	private InputStream image = null;
+
 	@JsonIgnore
 	@Transient
 	private String showCustomerStateList;
@@ -173,6 +181,21 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 	}
 
 
+	public String getCustomerImage() {
+		return customerImage;
+	}
+
+	public void setCustomerImage(String customerImage) {
+		this.customerImage = customerImage;
+	}
+
+	public InputStream getImage() {
+		return image;
+	}
+
+	public void setImage(InputStream image) {
+		this.image = image;
+	}
 
 	public Date getDateOfBirth() {
 		return CloneUtils.clone(dateOfBirth);
