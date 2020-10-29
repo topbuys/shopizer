@@ -3,6 +3,7 @@ package com.salesmanager.shop.utils;
 import com.salesmanager.core.model.catalog.category.Category;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
+import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.merchant.MerchantStore;
 
 public interface ImageFilePath {
@@ -108,5 +109,12 @@ public interface ImageFilePath {
 	 */
 	String buildCategorymageUtils(Category category, String imageName);
 
-
+	/**
+	 * Builds customer image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param customer
+	 * @param imageName
+	 * @return
+	 */
+	String buildCustomerImageUtils(Customer customer, String imageName);
 }

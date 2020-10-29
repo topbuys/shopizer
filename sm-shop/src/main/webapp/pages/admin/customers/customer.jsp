@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 
 <%@ page session="false" %>
 
@@ -565,6 +566,19 @@ function setCredentials(customerId, userName, password){
 	              
 	             </c:if>
 
+					<div class="control-group">
+						<label><s:message code="label.customer.image" text="Profile Photo"/>&nbsp;<c:if test="${customerImage!=null && customerImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage()"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+						<div class="controls" id="imageControl">
+							<c:choose>
+								<c:when test="${customerImage==null || customerImage==''}">
+									<input class="input-file" id="image" name="image" type="file">
+								</c:when>
+								<c:otherwise>
+									<img src="<sm:customerImage imageName="${customerImage}" customer="${customer}"/>" width="200"/>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</div>
 
 		        <div class="form-actions">
                  	  <div class="pull-right">

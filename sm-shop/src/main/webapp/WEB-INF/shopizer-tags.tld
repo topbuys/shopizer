@@ -340,6 +340,29 @@
 
 </tag>
 
+<tag>
+    <!-- Builds the product image URL -->
+    <name>customerImage</name>
+    <tag-class>com.salesmanager.shop.tags.CustomerImageUrlTag</tag-class>
+    <body-content>scriptless</body-content>
+
+
+    <attribute>
+        <name>imageName</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+    </attribute>
+
+    <attribute>
+        <name>customer</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>com.salesmanager.core.model.customer.Customer</type>
+    </attribute>
+
+
+</tag>
 
 
 </taglib>
