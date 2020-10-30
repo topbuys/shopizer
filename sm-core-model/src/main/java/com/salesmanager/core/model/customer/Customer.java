@@ -48,6 +48,7 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.user.Group;
 import com.salesmanager.core.utils.CloneUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "CUSTOMER", 
@@ -154,7 +155,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 
 	@JsonIgnore
 	@Transient
-	private InputStream image = null;
+	private MultipartFile image = null;
 
 	@JsonIgnore
 	@Transient
@@ -189,11 +190,11 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 		this.customerImage = customerImage;
 	}
 
-	public InputStream getImage() {
+	public MultipartFile getImage() {
 		return image;
 	}
 
-	public void setImage(InputStream image) {
+	public void setImage(MultipartFile image) {
 		this.image = image;
 	}
 

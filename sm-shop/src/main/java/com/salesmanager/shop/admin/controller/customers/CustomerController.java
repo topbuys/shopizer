@@ -12,6 +12,7 @@ import com.salesmanager.core.business.services.system.EmailService;
 import com.salesmanager.core.business.services.user.GroupService;
 import com.salesmanager.core.business.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.business.utils.ajax.AjaxResponse;
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.customer.CustomerCriteria;
 import com.salesmanager.core.model.customer.CustomerList;
@@ -348,7 +349,7 @@ public class CustomerController {
 		List<Group> submitedGroups = customer.getGroups();
 		Set<Integer> ids = new HashSet<Integer>();
 		for(Group group : submitedGroups) {
-			ids.add(Integer.parseInt(group.getGroupName()));
+			ids.add(group.getId());
 		}
 		
 		List<Group> newGroups = groupService.listGroupByIds(ids);
@@ -391,9 +392,16 @@ public class CustomerController {
 				customer.getBilling().setState( customer.getBilling().getState() );
 			}
 		}
-				
 
-		
+
+		if (customer.getImage() != null && !customer.getImage().isEmpty()) {
+
+			String imageName = customer.getImage().getOriginalFilename();
+
+			newCustomer.setCustomerImage(imageName);
+
+		}
+
 		newCustomer.setDefaultLanguage(customer.getDefaultLanguage() );
 		
 		customer.getDelivery().setZone(  deliveryZone);

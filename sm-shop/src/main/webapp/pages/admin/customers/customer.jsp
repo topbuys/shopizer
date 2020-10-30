@@ -396,7 +396,7 @@ function setCredentials(customerId, userName, password){
 				<c:url var="saveCustomer" value="/admin/customers/save.html"/>
 
 
-				<form:form method="POST" modelAttribute="customer" action="${saveCustomer}">
+				<form:form method="POST" enctype="multipart/form-data" modelAttribute="customer" action="${saveCustomer}">
 				
 					<form:errors id="customer.error" path="*" cssClass="alert alert-error" element="div" />
 					<div id="customerError" class="alert alert-error" style="display:none;"></div>
@@ -567,14 +567,15 @@ function setCredentials(customerId, userName, password){
 	             </c:if>
 
 					<div class="control-group">
-						<label><s:message code="label.customer.image" text="Profile Photo"/>&nbsp;<c:if test="${customerImage!=null && customerImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage()"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+						<c:out value="${customer.customerImage}" escapeXml="false" />
+						<label><s:message code="label.customer.image" text="Profile Photo"/>&nbsp;<c:if test="${customer.customerImage!=null && customer.customerImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage()"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
 						<div class="controls" id="imageControl">
 							<c:choose>
-								<c:when test="${customerImage==null || customerImage==''}">
+								<c:when test="${customer.customerImage==null || customer.customerImage==''}">
 									<input class="input-file" id="image" name="image" type="file">
 								</c:when>
 								<c:otherwise>
-									<img src="<sm:customerImage imageName="${customerImage}" customer="${customer}"/>" width="200"/>
+									<img src="<sm:customerImage imageName="${customer.customerImage}" customer="${customer}"/>" width="200"/>
 								</c:otherwise>
 							</c:choose>
 						</div>

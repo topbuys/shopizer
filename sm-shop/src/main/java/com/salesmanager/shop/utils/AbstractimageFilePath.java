@@ -187,7 +187,7 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 	 */
 	public String buildCustomerImageUtils(Customer customer, String imageName) {
 		return new StringBuilder().append(getBasePath()).append(Constants.CUSTOMER_URI).append(Constants.SLASH).append(customer.getMerchantStore().getCode())
-				.append(Constants.SLASH).append(customer.getId())
+				.append(Constants.SLASH).append(customer.getId()).append(Constants.SLASH)
 				.append(imageName).toString();
 	}
 	
