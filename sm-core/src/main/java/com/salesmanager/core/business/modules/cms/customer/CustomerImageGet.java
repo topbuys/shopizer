@@ -9,5 +9,5 @@ import com.salesmanager.core.model.customer.Customer;
  */
 
 public interface CustomerImageGet {
-    OutputContentFile getCustomerImage(Customer customer) throws ServiceException;
+    OutputContentFile getCustomerImage(String storeCode, Long customerId, String imageName) throws ServiceException;
 }

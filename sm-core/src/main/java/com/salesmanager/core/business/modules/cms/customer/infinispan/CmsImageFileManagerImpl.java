@@ -84,8 +84,8 @@ public class CmsImageFileManagerImpl implements CustomerAssetsManager {
   }
 
   @Override
-  public OutputContentFile getCustomerImage(Customer customer) throws ServiceException {
-    return getCustomerImageContent(customer.getMerchantStore().getCode(), customer.getId(), customer.getCustomerImage());
+  public OutputContentFile getCustomerImage(String storeCode, Long customerId, String imageName) throws ServiceException {
+    return getCustomerImageContent(storeCode, customerId, imageName);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class CmsImageFileManagerImpl implements CustomerAssetsManager {
       nodePath.append(customer.getMerchantStore().getCode())
               .append(Constants.SLASH)
               .append(customer.getId())
-              .append(Constants.SLASH);;
+              .append(Constants.SLASH);
 
       Node<String, Object> customerNode = getNode(nodePath.toString());
 

@@ -127,7 +127,7 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	 */
 	private void saveCustomerImage(Customer customer) throws ServiceException {
 		try {
-			if(customerFileManager.getCustomerImage(customer) == null) {
+			if(customerFileManager.getCustomerImage(customer.getMerchantStore().getCode(), customer.getId(), customer.getCustomerImage()) == null) {
 				if (customer.getImage() != null) {
 					InputStream inputStream = customer.getImage().getInputStream();
 					ImageContentFile cmsContentImage = new ImageContentFile();

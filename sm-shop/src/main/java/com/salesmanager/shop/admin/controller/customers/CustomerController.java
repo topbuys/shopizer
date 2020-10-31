@@ -399,6 +399,7 @@ public class CustomerController {
 			String imageName = customer.getImage().getOriginalFilename();
 
 			newCustomer.setCustomerImage(imageName);
+			newCustomer.setImage(customer.getImage());
 
 		}
 

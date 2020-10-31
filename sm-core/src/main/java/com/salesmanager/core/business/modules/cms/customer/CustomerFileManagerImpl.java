@@ -52,8 +52,8 @@ public class CustomerFileManagerImpl extends CustomerFileManager {
   }
 
   @Override
-  public OutputContentFile getCustomerImage(Customer customer) throws ServiceException {
-    return getImage.getCustomerImage(customer);
+  public OutputContentFile getCustomerImage(String storeCode, Long customerId, String imageName) throws ServiceException {
+    return getImage.getCustomerImage(storeCode, customerId, imageName);
   }
 
   @Override
