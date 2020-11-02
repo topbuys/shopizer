@@ -132,7 +132,7 @@ public class CmsImageFileManagerImpl implements CustomerAssetsManager {
 
     try {
       StringBuilder nodePath = new StringBuilder();
-      nodePath.append(customer.getMerchantStore().getCode()).append(Constants.SLASH).append(customer.getId()).append(Constants.SLASH);;
+      nodePath.append(customer.getMerchantStore().getCode()).append(Constants.SLASH).append(customer.getId()).append(Constants.SLASH);
 
       Node<String, Object> customerNode = getNode(nodePath.toString());
       customerNode.remove(customer.getCustomerImage());
