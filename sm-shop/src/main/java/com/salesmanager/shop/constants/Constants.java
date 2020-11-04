@@ -69,6 +69,7 @@ public class Constants {
 	public final static String CATEGORY_URI = "/category";
 	public final static String PRODUCT_ID_URI= "/productid";
 	public final static String ORDER_DOWNLOAD_URI= "/order/download";
+	public final static String CUSTOMER_URI = "/customer";
 
 	public final static String URL_EXTENSION= ".html";
 	public final static String REDIRECT_PREFIX ="redirect:";

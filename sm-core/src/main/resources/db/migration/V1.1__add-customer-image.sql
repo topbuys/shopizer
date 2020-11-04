@@ -1,0 +1,2 @@
+ALTER TABLE customer
+ADD COLUMN `CUSTOMER_IMAGE` varchar(1000);

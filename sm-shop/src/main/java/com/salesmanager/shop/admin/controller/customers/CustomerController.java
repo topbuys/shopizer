@@ -1,5 +1,6 @@
 package com.salesmanager.shop.admin.controller.customers;
 
+import com.salesmanager.core.business.modules.cms.customer.CustomerFileManager;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.business.services.customer.attribute.CustomerAttributeService;
 import com.salesmanager.core.business.services.customer.attribute.CustomerOptionService;
@@ -12,6 +13,7 @@ import com.salesmanager.core.business.services.system.EmailService;
 import com.salesmanager.core.business.services.user.GroupService;
 import com.salesmanager.core.business.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.business.utils.ajax.AjaxResponse;
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
 import com.salesmanager.core.model.customer.Customer;
 import com.salesmanager.core.model.customer.CustomerCriteria;
 import com.salesmanager.core.model.customer.CustomerList;
@@ -38,6 +40,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,10 +51,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -115,7 +115,9 @@ public class CustomerController {
 	@Inject
 	private CustomerFacade customerFacade;
 	
-	
+	@Autowired
+	private CustomerFileManager customerFileManager;
+
 	/**
 	 * Customer details
 	 * @param model
@@ -348,7 +350,7 @@ public class CustomerController {
 		List<Group> submitedGroups = customer.getGroups();
 		Set<Integer> ids = new HashSet<Integer>();
 		for(Group group : submitedGroups) {
-			ids.add(Integer.parseInt(group.getGroupName()));
+			ids.add(group.getId());
 		}
 		
 		List<Group> newGroups = groupService.listGroupByIds(ids);
@@ -391,9 +393,17 @@ public class CustomerController {
 				customer.getBilling().setState( customer.getBilling().getState() );
 			}
 		}
-				
 
-		
+
+		if (customer.getImage() != null && !customer.getImage().isEmpty()) {
+
+			String imageName = customer.getImage().getOriginalFilename();
+
+			newCustomer.setCustomerImage(imageName);
+			newCustomer.setImage(customer.getImage());
+
+		}
+
 		newCustomer.setDefaultLanguage(customer.getDefaultLanguage() );
 		
 		customer.getDelivery().setZone(  deliveryZone);
@@ -820,7 +830,59 @@ public class CustomerController {
 		
 		
 	}
-	
+
+	/**
+	 * Removes a customer image
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequestMapping(value="/admin/customers/removeImage.html")
+	public @ResponseBody ResponseEntity<String> removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+
+		String customerId = request.getParameter("customerId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		AjaxResponse resp = new AjaxResponse();
+		final HttpHeaders httpHeaders= new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		try {
+
+			Customer customer = customerService.getById(Long.parseLong(customerId));
+
+			if(customer == null) {
+				resp.setErrorString("Customer does not exist");
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				String returnString = resp.toJSONString();
+				return new ResponseEntity<>(returnString,httpHeaders,HttpStatus.OK);
+			}
+
+			if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setErrorString("Invalid customer id");
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				String returnString = resp.toJSONString();
+				return new ResponseEntity<>(returnString,httpHeaders,HttpStatus.OK);
+			}
+
+			customerFileManager.removeCustomerImage(customer);
+
+			customer.setCustomerImage(null);
+			customerService.saveOrUpdate(customer);
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting customer image", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return new ResponseEntity<>(returnString,httpHeaders,HttpStatus.OK);
+	}
+
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
 		//display menu

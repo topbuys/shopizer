@@ -1,11 +1,20 @@
 package com.salesmanager.core.business.services.customer;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
+import com.salesmanager.core.business.modules.cms.category.CategoryFileManager;
+import com.salesmanager.core.business.modules.cms.customer.CustomerFileManager;
+import com.salesmanager.core.model.catalog.category.Category;
+import com.salesmanager.core.model.catalog.category.image.CategoryImage;
+import com.salesmanager.core.model.content.FileContentType;
+import com.salesmanager.core.model.content.ImageContentFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.exception.ServiceException;
@@ -35,6 +44,8 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	@Inject
 	private GeoLocation geoLocation;
 
+	@Autowired
+	private CustomerFileManager customerFileManager;
 	
 	@Inject
 	public CustomerServiceImpl(CustomerRepository customerRepository) {
@@ -90,11 +101,10 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 		
 		if(customer.getId()!=null && customer.getId()>0) {
 			super.update(customer);
-		} else {			
-		
+		} else {
 			super.create(customer);
-
 		}
+		saveCustomerImage(customer);
 	}
 
 	public void delete(Customer customer) throws ServiceException {
@@ -110,6 +120,27 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 		customerRepository.delete(customer);
 
 	}
-	
 
+
+	/**
+	 * Image creation needs extra service to save the file in the CMS
+	 */
+	private void saveCustomerImage(Customer customer) throws ServiceException {
+		try {
+			if(customerFileManager.getCustomerImage(customer.getMerchantStore().getCode(), customer.getId(), customer.getCustomerImage()) == null) {
+				if (customer.getImage() != null) {
+					InputStream inputStream = customer.getImage().getInputStream();
+					ImageContentFile cmsContentImage = new ImageContentFile();
+					cmsContentImage.setFileName(customer.getCustomerImage());
+
+					cmsContentImage.setFile(inputStream);
+					cmsContentImage.setFileContentType(FileContentType.IMAGE);
+
+					customerFileManager.addCustomerImage(customer, cmsContentImage);
+				}
+			}
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
+	}
 }

@@ -139,6 +139,9 @@ public class FilePathUtils {
 		return "" + normalizePath(request.getContextPath());
 	}
 
+	public String buildRelativeCustomerUri(HttpServletRequest request) {
+		return "" + normalizePath(request.getContextPath());
+	}
 	/**
 	 * Access to the customer section
 	 */

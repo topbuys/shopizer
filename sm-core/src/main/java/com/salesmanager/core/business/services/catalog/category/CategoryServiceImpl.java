@@ -110,11 +110,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		// save or update (persist and attach entities
 		if (category.getId() != null && category.getId() > 0) {
 			super.update(category);
-			saveProductImageList(category.getImages(), category);
+			saveCategoryImageList(category.getImages(), category);
 		} else {
 			Set<CategoryImage> images = new HashSet<>(category.getImages());
 			this.create(category);
-			saveProductImageList(images, category);
+			saveCategoryImageList(images, category);
 		}
 	}
 
@@ -442,7 +442,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	/**
 	 * Image creation needs extra service to save the file in the CMS
 	 */
-	private void saveProductImageList(Set<CategoryImage> categoryImages, Category category) throws ServiceException {
+	private void saveCategoryImageList(Set<CategoryImage> categoryImages, Category category) throws ServiceException {
 		try {
 			if(categoryImages!=null && categoryImages.size()>0) {
 				for(CategoryImage image : categoryImages) {

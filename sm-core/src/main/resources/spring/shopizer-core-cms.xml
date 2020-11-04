@@ -59,6 +59,20 @@
 		</beans:property>
 	</beans:bean>
 
+	<!-- Customer images manager -->
+	<beans:bean id="customerFileManager"
+				class="com.salesmanager.core.business.modules.cms.customer.CustomerFileManagerImpl">
+		<beans:property name="uploadImage">
+			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+		</beans:property>
+		<beans:property name="getImage">
+			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+		</beans:property>
+		<beans:property name="removeImage">
+			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+		</beans:property>
+	</beans:bean>
+
 	<!-- Content images manager -->
 	<beans:bean id="contentFileManager"
 		class="com.salesmanager.core.business.modules.cms.content.StaticContentFileManagerImpl">
@@ -117,6 +131,15 @@
 		<!-- internal implementation -->
 		<beans:property name="cacheManager">
 			<beans:ref bean="infinispanCategoryAssetsManager" />
+		</beans:property>
+	</beans:bean>
+
+	<!-- default CMS implementation for [[customer images]] -->
+	<beans:bean id="defaultCustomerAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.customer.infinispan.CmsImageFileManagerImpl" factory-method="getInstance" >
+		<!-- internal implementation -->
+		<beans:property name="cacheManager">
+			<beans:ref bean="infinispanCustomerAssetsManager" />
 		</beans:property>
 	</beans:bean>
 
@@ -203,6 +226,13 @@
 				class="com.salesmanager.core.business.modules.cms.impl.CategoryCacheManagerImpl">
 		<beans:constructor-arg value="${config.cms.category.location}"/><!-- location -->
 		<beans:constructor-arg value="category-merchant"/><!-- root -->
+	</beans:bean>
+
+	<!-- infinispan category STARTUP-->
+	<beans:bean id="infinispanCustomerAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.impl.CustomerCacheManagerImpl">
+		<beans:constructor-arg value="${config.cms.customer.location}"/><!-- location -->
+		<beans:constructor-arg value="customer-merchant"/><!-- root -->
 	</beans:bean>
 
 	<!-- infinispan static STARTUP-->

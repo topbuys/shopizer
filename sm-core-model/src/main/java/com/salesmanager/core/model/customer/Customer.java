@@ -1,5 +1,6 @@
 package com.salesmanager.core.model.customer;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +48,7 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.user.Group;
 import com.salesmanager.core.utils.CloneUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "CUSTOMER", 
@@ -147,7 +149,14 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 		
 	})
 	private List<Group> groups = new ArrayList<Group>();
-	
+
+	@Column(name = "CUTOMER_IMAGE")
+	private String customerImage;
+
+	@JsonIgnore
+	@Transient
+	private MultipartFile image = null;
+
 	@JsonIgnore
 	@Transient
 	private String showCustomerStateList;
@@ -173,6 +182,21 @@ public class Customer extends SalesManagerEntity<Long, Customer> implements Audi
 	}
 
 
+	public String getCustomerImage() {
+		return customerImage;
+	}
+
+	public void setCustomerImage(String customerImage) {
+		this.customerImage = customerImage;
+	}
+
+	public MultipartFile getImage() {
+		return image;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
 
 	public Date getDateOfBirth() {
 		return CloneUtils.clone(dateOfBirth);

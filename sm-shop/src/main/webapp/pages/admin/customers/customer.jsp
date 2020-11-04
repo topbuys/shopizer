@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 
 <%@ page session="false" %>
 
@@ -351,6 +352,37 @@ function setCredentials(customerId, userName, password){
 	});
 }
 
+function removeImage(customerId){
+	$("#customer.error").show();
+	$.ajax({
+		type: 'POST',
+		url: '<c:url value="/admin/customers/removeImage.html"/>',
+		data: 'customerId=' + customerId,
+		dataType: 'json',
+		success: function(response){
+			var status = isc.XMLTools.selectObjects(response, "/response/status");
+			if(status==0 || status ==9999) {
+
+				//remove delete
+				$("#imageControlRemove").html('');
+				//add field
+				$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+				$(".alert-success").show();
+
+			} else {
+
+				//display message
+				$(".alert-error").show();
+			}
+
+
+		},
+		error: function(xhr, textStatus, errorThrown) {
+			alert('error ' + errorThrown);
+		}
+
+	});
+}
 
 </script>
 
@@ -395,15 +427,16 @@ function setCredentials(customerId, userName, password){
 				<c:url var="saveCustomer" value="/admin/customers/save.html"/>
 
 
-				<form:form method="POST" modelAttribute="customer" action="${saveCustomer}">
+				<form:form method="POST" enctype="multipart/form-data" modelAttribute="customer" action="${saveCustomer}">
 				
 					<form:errors id="customer.error" path="*" cssClass="alert alert-error" element="div" />
-					<div id="customerError" class="alert alert-error" style="display:none;"></div>
-					<div id="customerSuccess" class="alert alert-success" 
-							style="<c:choose>
+					<div id="customerError" class="alert alert-error" style="display:none;">
+						<s:message code="message.error" text="An error occured"/></div>
+					</div>
+					<div id="customerSuccess" class="alert alert-success" style="<c:choose>
 								<c:when test="${success!=null}">display:block;</c:when>
 								<c:otherwise>display:none;</c:otherwise></c:choose>">
-								<s:message code="message.success" text="Request successful"/>
+						<s:message code="message.success" text="Request successful"/>
 					</div>    
 					
 					<form:hidden id="customerId" path="id" /> 
@@ -565,6 +598,19 @@ function setCredentials(customerId, userName, password){
 	              
 	             </c:if>
 
+					<div class="control-group">
+						<label><s:message code="label.customer.image" text="Profile Photo"/>&nbsp;<c:if test="${customer.customerImage!=null && customer.customerImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage(${customer.id})"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+						<div class="controls" id="imageControl">
+							<c:choose>
+								<c:when test="${customer.customerImage==null || customer.customerImage==''}">
+									<input class="input-file" id="image" name="image" type="file">
+								</c:when>
+								<c:otherwise>
+									<img src="<sm:customerImage imageName="${customer.customerImage}" customer="${customer}"/>" width="200"/>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</div>
 
 		        <div class="form-actions">
                  	  <div class="pull-right">
