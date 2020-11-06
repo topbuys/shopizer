@@ -9,18 +9,19 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.user.Group;
 import com.salesmanager.shop.model.customer.ReadableCustomer;
 import com.salesmanager.shop.model.customer.address.Address;
-import com.salesmanager.shop.model.customer.attribute.CustomerOptionDescription;
-import com.salesmanager.shop.model.customer.attribute.CustomerOptionValueDescription;
-import com.salesmanager.shop.model.customer.attribute.ReadableCustomerAttribute;
-import com.salesmanager.shop.model.customer.attribute.ReadableCustomerOption;
-import com.salesmanager.shop.model.customer.attribute.ReadableCustomerOptionValue;
+import com.salesmanager.shop.model.customer.attribute.*;
 import com.salesmanager.shop.model.security.ReadableGroup;
+import com.salesmanager.shop.utils.ImageFilePath;
 import org.apache.commons.lang3.StringUtils;
 
 public class ReadableCustomerPopulator extends
 		AbstractDataPopulator<Customer, ReadableCustomer> {
 
-	
+	private ImageFilePath imageUtils;
+
+	public void setimageUtils(ImageFilePath imageUtils) {
+		this.imageUtils = imageUtils;
+	}
 
 	@Override
 	public ReadableCustomer populate(Customer source, ReadableCustomer target,
@@ -148,6 +149,13 @@ public class ReadableCustomerPopulator extends
 						);
 					}
 				}
+			}
+
+			if(source.getCustomerImage()!=null && !source.getCustomerImage().isEmpty()) {
+				String contextPath = imageUtils.getContextPath();
+				StringBuilder imgPath = new StringBuilder();
+				imgPath.append(contextPath).append(imageUtils.buildCustomerImageUtils(source, source.getCustomerImage()));
+				target.setImageUrl(imgPath.toString());
 			}
 		
 		} catch (Exception e) {

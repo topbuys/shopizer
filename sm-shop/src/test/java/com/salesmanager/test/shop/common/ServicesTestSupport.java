@@ -1,6 +1,9 @@
 package com.salesmanager.test.shop.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salesmanager.core.business.constants.Constants;
+import com.salesmanager.core.model.customer.Customer;
+import com.salesmanager.core.model.customer.CustomerGender;
 import com.salesmanager.shop.application.ShopApplication;
 import com.salesmanager.shop.model.catalog.category.Category;
 import com.salesmanager.shop.model.catalog.category.CategoryDescription;
@@ -11,26 +14,36 @@ import com.salesmanager.shop.model.catalog.product.PersistableProduct;
 import com.salesmanager.shop.model.catalog.product.ProductDescription;
 import com.salesmanager.shop.model.catalog.product.ProductSpecification;
 import com.salesmanager.shop.model.catalog.product.ReadableProduct;
+import com.salesmanager.shop.model.customer.PersistableCustomer;
+import com.salesmanager.shop.model.customer.address.Address;
 import com.salesmanager.shop.model.shoppingcart.PersistableShoppingCartItem;
 import com.salesmanager.shop.model.shoppingcart.ReadableShoppingCart;
 import com.salesmanager.shop.model.store.ReadableMerchantStore;
 import com.salesmanager.shop.populator.customer.ReadableCustomerList;
 import com.salesmanager.shop.store.security.AuthenticationRequest;
 import com.salesmanager.shop.store.security.AuthenticationResponse;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +72,21 @@ public class ServicesTestSupport {
         headers.add("Authorization", "Bearer " + response.getBody().getToken());
         return headers;
     }
+
+    protected HttpHeaders getCustomerHeader(final String userName, final String password) {
+        final ResponseEntity<AuthenticationResponse> response = testRestTemplate.postForEntity("/api/v1/customer/login", new HttpEntity<>(new AuthenticationRequest(userName, password)),
+                AuthenticationResponse.class);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + response.getBody().getToken());
+        return headers;
+    }
+
+    protected HttpHeaders getDummyCustomerHeader() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + RandomStringUtils.random(10));
+        return headers;
+    }
+
 
     public ReadableMerchantStore fetchStore() {
         final HttpEntity<String> httpEntity = new HttpEntity<>(getHeader());
@@ -216,5 +244,39 @@ public class ServicesTestSupport {
     	return response.getBody();
     }
 
+    protected PersistableCustomer customerWithoutEmail() {
+        final PersistableCustomer testCustomer = new PersistableCustomer();
 
+        testCustomer.setPassword("Test1234");
+        testCustomer.setGender(CustomerGender.M.name());
+        testCustomer.setLanguage("en");
+        final Address billing = new Address();
+        billing.setFirstName("customer2");
+        billing.setLastName("ccstomer2");
+        billing.setCountry("BE");
+        testCustomer.setBilling(billing);
+        testCustomer.setStoreCode(Constants.DEFAULT_STORE);
+
+        return testCustomer;
+    }
+
+    protected Resource getTestFile() throws IOException {
+        Path testFile = Files.createTempFile("test-file", ".txt");
+        Files.write(testFile, "Hello World !!, This is a test file.".getBytes());
+        return new FileSystemResource(testFile.toFile());
+    }
+
+    protected Resource getCustomerAsFile(String customerJson) throws IOException {
+        Path testFile = Files.createTempFile("customer", ".json");
+        Files.write(testFile, customerJson.getBytes());
+        return new FileSystemResource(testFile.toFile());
+    }
+
+    protected String getCustomerAsJson(PersistableCustomer customer) {
+        try {
+            return new ObjectMapper().writeValueAsString(customer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
