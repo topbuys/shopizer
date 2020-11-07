@@ -152,14 +152,14 @@ public class CustomerApi {
       return customerFacade.getCustomerById(id, merchantStore, language);
   }
 
-  /**cutst
+  /**
    * Get logged in customer profile
    * @param merchantStore
    * @param language
    * @param request
    * @return
    */
-  @GetMapping("/auth/customer/profile")
+  @GetMapping("/private/customer/profile")
   @ApiImplicitParams({
       @ApiImplicitParam(name = "store", dataType = "string", defaultValue = "DEFAULT"),
       @ApiImplicitParam(name = "lang", dataType = "string", defaultValue = "en")
@@ -168,6 +168,27 @@ public class CustomerApi {
       @ApiIgnore MerchantStore merchantStore,
       @ApiIgnore Language language,
       HttpServletRequest request) {
+    Principal principal = request.getUserPrincipal();
+    String userName = principal.getName();
+    return customerFacade.getCustomerByNick(userName, merchantStore, language);
+  }
+
+  /**
+   * Get logged in customer profile
+   * @param merchantStore
+   * @param language
+   * @param request
+   * @return
+   */
+  @GetMapping("/auth/customer/profile")
+  @ApiImplicitParams({
+          @ApiImplicitParam(name = "store", dataType = "string", defaultValue = "DEFAULT"),
+          @ApiImplicitParam(name = "lang", dataType = "string", defaultValue = "en")
+  })
+  public ReadableCustomer getAuthCustomerProfile(
+          @ApiIgnore MerchantStore merchantStore,
+          @ApiIgnore Language language,
+          HttpServletRequest request) {
     Principal principal = request.getUserPrincipal();
     String userName = principal.getName();
     return customerFacade.getCustomerByNick(userName, merchantStore, language);

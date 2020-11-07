@@ -1102,22 +1102,21 @@ public class CustomerFacadeImpl implements CustomerFacade {
         customer.setPassword(password);
       }
 
-      if (customer.getProfilePhoto() != null && !customer.getProfilePhoto().isEmpty()) {
-
-        String imageName = customer.getProfilePhoto().getOriginalFilename();
+      Optional.ofNullable(customer.getProfilePhoto()).ifPresent(profilePhotoFile -> {
+        String imageName = profilePhotoFile.getOriginalFilename();
 
         customerModel.setCustomerImage(imageName);
-        customerModel.setImage(customer.getProfilePhoto());
-      }
+        customerModel.setImage(profilePhotoFile);
+      });
 
       saveCustomer(customerModel);
       customer.setId(customerModel.getId());
 
-      if (customerModel.getCustomerImage() != null && !customerModel.getCustomerImage().isEmpty()) {
+      Optional.ofNullable(customerModel.getCustomerImage()).ifPresent(customerImage -> {
         StringBuilder imgPath = new StringBuilder();
-        imgPath.append(imageUtils.getContextPath()).append(imageUtils.buildCustomerImageUtils(customerModel, customerModel.getCustomerImage()));
+        imgPath.append(imageUtils.getContextPath()).append(imageUtils.buildCustomerImageUtils(customerModel, customerImage));
         customer.setImageUrl(imgPath.toString());
-      }
+      });
 
       return customer;
     }
