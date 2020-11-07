@@ -18,6 +18,7 @@ import com.salesmanager.shop.model.customer.ReadableCustomerReview;
 import com.salesmanager.shop.model.customer.address.Address;
 import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
 import com.salesmanager.shop.populator.customer.ReadableCustomerList;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>Customer facade working as a bridge between {@link CustomerService} and Controller
@@ -81,7 +82,7 @@ public interface CustomerFacade
     
     public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
     
-    public PersistableCustomer  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore, final Language language) throws Exception;
+    public PersistableCustomer  registerCustomer(final PersistableCustomer customer, final MerchantStore merchantStore, final Language language) throws Exception;
     
     public Address getAddress(final Long userId, final MerchantStore merchantStore,boolean isBillingAddress) throws Exception;
     
@@ -188,4 +189,6 @@ public interface CustomerFacade
 	boolean passwordMatch(String rawPassword, Customer customer);
 	
 	void changePassword(Customer customer, String newPassword);
+
+	ReadableCustomer create(PersistableCustomer customer, MerchantStore store, Language language, MultipartFile profilePhoto);
 }

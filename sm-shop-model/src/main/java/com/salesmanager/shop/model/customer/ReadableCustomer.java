@@ -16,7 +16,8 @@ public class ReadableCustomer extends CustomerEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<ReadableCustomerAttribute> attributes = new ArrayList<ReadableCustomerAttribute>();
 	private List<ReadableGroup> groups = new ArrayList<ReadableGroup>();
-	
+	private String imageUrl;
+
 	public void setAttributes(List<ReadableCustomerAttribute> attributes) {
 		this.attributes = attributes;
 	}
@@ -30,4 +31,11 @@ public class ReadableCustomer extends CustomerEntity implements Serializable {
 		this.groups = groups;
 	}
 
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 }

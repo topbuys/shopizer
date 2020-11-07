@@ -7,16 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.salesmanager.core.model.customer.CustomerCriteria;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
@@ -30,6 +21,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
@@ -64,7 +56,6 @@ public class CustomerApi {
       return customerFacade.create(customer, merchantStore, language);
 
   }
-  
 
   @PutMapping("/private/customer/{id}")
   @ApiOperation(
@@ -181,6 +172,27 @@ public class CustomerApi {
     String userName = principal.getName();
     return customerFacade.getCustomerByNick(userName, merchantStore, language);
   }
+
+  /**
+   * Get logged in customer profile
+   * @param merchantStore
+   * @param language
+   * @param request
+   * @return
+   */
+  @GetMapping("/auth/customer/profile")
+  @ApiImplicitParams({
+          @ApiImplicitParam(name = "store", dataType = "string", defaultValue = "DEFAULT"),
+          @ApiImplicitParam(name = "lang", dataType = "string", defaultValue = "en")
+  })
+  public ReadableCustomer getAuthCustomerProfile(
+          @ApiIgnore MerchantStore merchantStore,
+          @ApiIgnore Language language,
+          HttpServletRequest request) {
+    Principal principal = request.getUserPrincipal();
+    String userName = principal.getName();
+    return customerFacade.getCustomerByNick(userName, merchantStore, language);
+  }
   
   @PatchMapping("/auth/customer/address")
   @ApiOperation(
@@ -216,11 +228,14 @@ public class CustomerApi {
   })
   public PersistableCustomer update(
       @ApiIgnore MerchantStore merchantStore,
-      @Valid @RequestBody PersistableCustomer customer,
+      @Valid @RequestPart("customer") PersistableCustomer customer,
+      @RequestPart(value = "profile-photo", required = false) MultipartFile profilePhoto,
       HttpServletRequest request) {
       
       Principal principal = request.getUserPrincipal();
       String userName = principal.getName();
+
+      customer.setProfilePhoto(profilePhoto);
 
       return customerFacade.update(userName, customer, merchantStore);
   }

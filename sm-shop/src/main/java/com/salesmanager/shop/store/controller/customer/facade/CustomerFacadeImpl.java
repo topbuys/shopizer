@@ -87,6 +87,7 @@ import com.salesmanager.shop.utils.EmailUtils;
 import com.salesmanager.shop.utils.ImageFilePath;
 import com.salesmanager.shop.utils.LabelUtils;
 import com.salesmanager.shop.utils.LocaleUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -352,11 +353,14 @@ public class CustomerFacadeImpl implements CustomerFacade {
     }
 
     LOG.info("About to persist customer to database.");
+
     customerService.saveOrUpdate(customerModel);
 
     LOG.info("Returning customer data to controller..");
     // return customerEntityPoulator(customerModel,merchantStore);
+
     customer.setId(customerModel.getId());
+
     return customer;
   }
 
@@ -663,29 +667,7 @@ public class CustomerFacadeImpl implements CustomerFacade {
 
   @Override
   public PersistableCustomer update(PersistableCustomer customer, MerchantStore store) {
-
-    if (customer.getId() == null || customer.getId() == 0) {
-      throw new ServiceRuntimeException("Can't update a customer with null id");
-    }
-
-    Customer cust = customerService.getById(customer.getId());
-
-    try{
-      customerPopulator.populate(customer, cust, store, store.getDefaultLanguage());
-    } catch (ConversionException e) {
-      throw new ConversionRuntimeException(e);
-    }
-
-    String password = customer.getPassword();
-    if (StringUtils.isBlank(password)) {
-      password = UserReset.generateRandomString();
-      customer.setPassword(password);
-    }
-
-    saveCustomer(cust);
-    customer.setId(cust.getId());
-
-    return customer;
+    return update(customer, store, true);
   }
 
 
@@ -934,6 +916,7 @@ public class CustomerFacadeImpl implements CustomerFacade {
 
   private ReadableCustomer convertCustomerToReadableCustomer(Customer customer, MerchantStore merchantStore, Language language) {
     ReadableCustomerPopulator populator = new ReadableCustomerPopulator();
+    populator.setimageUtils(imageUtils);
     try{
       return populator.populate(customer, new ReadableCustomer(), merchantStore, language);
     } catch (ConversionException e) {
@@ -1045,12 +1028,14 @@ public class CustomerFacadeImpl implements CustomerFacade {
 
 
   @Override
-  public PersistableCustomer update(String userName, PersistableCustomer customer,
-      MerchantStore store) {
+  public PersistableCustomer update(String userName, PersistableCustomer customer, MerchantStore store) {
     ReadableCustomer customerModel = getByUserName(userName, store, store.getDefaultLanguage());
     customer.setId(customerModel.getId());
     customer.setUserName(userName);
-    return this.update(customer, store);
+
+    PersistableCustomer updatedCustomer = update(customer, store, false);
+
+    return updatedCustomer;
   }
 
 
@@ -1071,4 +1056,68 @@ public class CustomerFacadeImpl implements CustomerFacade {
     }
     
   }
+
+    @Override
+    public ReadableCustomer create(PersistableCustomer customer, MerchantStore store, Language language, MultipartFile profilePhoto) {
+      Validate.notNull(customer, "Customer cannot be null");
+      Validate.notNull(customer.getEmailAddress(), "Customer email address is required");
+
+      //set customer user name
+      customer.setUserName(customer.getEmailAddress());
+      if (userExist(customer.getUserName())) {
+        throw new ServiceRuntimeException("User already exist");
+      }
+      //end user exists
+
+      Customer customerToPopulate = convertPersistableCustomerToCustomer(customer, store);
+      try {
+        setCustomerModelDefaultProperties(customerToPopulate, store);
+      } catch (Exception e) {
+        throw new ServiceRuntimeException("Cannot set default customer properties",e);
+      }
+      saveCustomer(customerToPopulate);
+      customer.setId(customerToPopulate.getId());
+
+      notifyNewCustomer(customer, store, customerToPopulate.getDefaultLanguage());
+      //convert to readable
+      return convertCustomerToReadableCustomer(customerToPopulate, store, language);
+    }
+
+    private PersistableCustomer update(PersistableCustomer customer, MerchantStore store, boolean generateRandomPassword) {
+      if (customer.getId() == null || customer.getId() == 0) {
+        throw new ServiceRuntimeException("Can't update a customer with null id");
+      }
+
+      Customer customerModel = customerService.getById(customer.getId());
+
+      try{
+        customerPopulator.populate(customer, customerModel, store, store.getDefaultLanguage());
+      } catch (ConversionException e) {
+        throw new ConversionRuntimeException(e);
+      }
+
+      String password = customer.getPassword();
+      if (StringUtils.isBlank(password) && generateRandomPassword) {
+        password = UserReset.generateRandomString();
+        customer.setPassword(password);
+      }
+
+      Optional.ofNullable(customer.getProfilePhoto()).ifPresent(profilePhotoFile -> {
+        String imageName = profilePhotoFile.getOriginalFilename();
+
+        customerModel.setCustomerImage(imageName);
+        customerModel.setImage(profilePhotoFile);
+      });
+
+      saveCustomer(customerModel);
+      customer.setId(customerModel.getId());
+
+      Optional.ofNullable(customerModel.getCustomerImage()).ifPresent(customerImage -> {
+        StringBuilder imgPath = new StringBuilder();
+        imgPath.append(imageUtils.getContextPath()).append(imageUtils.buildCustomerImageUtils(customerModel, customerImage));
+        customer.setImageUrl(imgPath.toString());
+      });
+
+      return customer;
+    }
 }
