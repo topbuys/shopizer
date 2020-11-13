@@ -49,13 +49,13 @@
 	<beans:bean id="categoryFileManager"
 				class="com.salesmanager.core.business.modules.cms.category.CategoryFileManagerImpl">
 		<beans:property name="uploadImage">
-			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
+			<beans:ref bean="defaultCategoryAssetsManager" />
 		</beans:property>
 		<beans:property name="getImage">
-			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
+			<beans:ref bean="defaultCategoryAssetsManager" />
 		</beans:property>
 		<beans:property name="removeImage">
-			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
+			<beans:ref bean="defaultCategoryAssetsManager" />
 		</beans:property>
 	</beans:bean>
 
@@ -63,13 +63,13 @@
 	<beans:bean id="customerFileManager"
 				class="com.salesmanager.core.business.modules.cms.customer.CustomerFileManagerImpl">
 		<beans:property name="uploadImage">
-			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+			<beans:ref bean="defaultCustomerAssetsManager" />
 		</beans:property>
 		<beans:property name="getImage">
-			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+			<beans:ref bean="defaultCustomerAssetsManager" />
 		</beans:property>
 		<beans:property name="removeImage">
-			<beans:ref bean="${config.cms.method}CustomerAssetsManager" />
+			<beans:ref bean="defaultCustomerAssetsManager" />
 		</beans:property>
 	</beans:bean>
 
@@ -198,12 +198,36 @@
 						<beans:ref bean="awsAssetsManager" />
 				</beans:property>
 	</beans:bean>
-	
+
 	<beans:bean id="awsDownloadsManager"
 				class="com.salesmanager.core.business.modules.cms.content.aws.S3StaticContentAssetsManagerImpl" factory-method="getInstance" >
  				<beans:property name="cmsManager">
 						<beans:ref bean="awsAssetsManager" />
 				</beans:property>
+	</beans:bean>
+
+
+	<!-- Digital Ocean-->
+	<beans:bean id="digitalOceanProductAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.product.digitalocean.DOSpaceProductContentFileManager" factory-method="getInstance" >
+		<!-- internal implementation -->
+		<beans:property name="cmsManager">
+			<beans:ref bean="digitalOceanAssetsManager" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="digitalOceanContentAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.content.aws.S3StaticContentAssetsManagerImpl" factory-method="getInstance" >
+		<beans:property name="cmsManager">
+			<beans:ref bean="digitalOceanAssetsManager" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="digitalOceanDownloadsManager"
+				class="com.salesmanager.core.business.modules.cms.content.aws.S3StaticContentAssetsManagerImpl" factory-method="getInstance" >
+		<beans:property name="cmsManager">
+			<beans:ref bean="digitalOceanAssetsManager" />
+		</beans:property>
 	</beans:bean>
 
 	<!--  end of CMS implementation for static content data -->
@@ -262,8 +286,13 @@
 		<beans:constructor-arg value="${config.cms.aws.region}"/>
 	</beans:bean>
 
-	
-	<!--  -->
+	<!-- aws -->
+	<beans:bean id="digitalOceanAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.impl.DOSpaceCacheManagerImpl">
+		<beans:constructor-arg value="${config.cms.doc.base-url}"/>
+		<beans:constructor-arg value="${config.cms.doc.bucket}"/>
+		<beans:constructor-arg value="${config.cms.doc.region}"/>
+	</beans:bean>
 	
 	<!-- 
 		*** End CMS configuration ***
