@@ -225,7 +225,7 @@
 	</beans:bean>
 
 	<beans:bean id="digitalOceanContentAssetsManager"
-				class="com.salesmanager.core.business.modules.cms.content.aws.S3StaticContentAssetsManagerImpl" factory-method="getInstance" >
+				class="com.salesmanager.core.business.modules.cms.content.digitalocean.DOSpaceContentAssetsManagerImpl" factory-method="getInstance" >
 		<beans:property name="cmsManager">
 			<beans:ref bean="digitalOceanAssetsManager" />
 		</beans:property>

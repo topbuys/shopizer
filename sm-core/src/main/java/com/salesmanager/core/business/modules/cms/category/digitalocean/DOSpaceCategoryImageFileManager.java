@@ -217,27 +217,6 @@ public class DOSpaceCategoryImageFileManager
 
   }
 
-
-  private String nodePath(String storeCode, String productSku, String productImageId, FileContentType contentType) {
-
-    StringBuilder sb = new StringBuilder();
-    // node path
-    String nodePath = nodePath(storeCode, productSku);
-    sb.append(nodePath);
-
-    // small large
-    if (contentType.name().equals(FileContentType.PRODUCT.name())) {
-      sb.append(SMALL);
-    } else if (contentType.name().equals(FileContentType.PRODUCTLG.name())) {
-      sb.append(LARGE);
-    }
-
-    sb.append(Constants.SLASH)
-      .append(productImageId).append(Constants.SLASH);
-
-    return sb.toString();
-  }
-
   public static String getName(String filename) {
     if (filename == null) {
       return null;
