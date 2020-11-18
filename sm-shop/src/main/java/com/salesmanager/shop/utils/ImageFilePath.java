@@ -53,7 +53,7 @@ public interface ImageFilePath {
 	 * @param imageName
 	 * @return
 	 */
-	public String buildProductImageUtils(MerchantStore store, Product product, String imageName);
+	public String buildProductImageUtils(MerchantStore store, Product product, String imageName, String imageId);
 	
 	/**
 	 * Builds a default product image file path that can be used by image servlet

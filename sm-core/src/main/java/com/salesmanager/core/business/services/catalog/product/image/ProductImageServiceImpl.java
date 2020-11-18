@@ -86,13 +86,10 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			
 			Assert.notNull(inputImage.getFile(),"ImageContentFile.file cannot be null");
 
-
-			
-			productFileManager.addProductImage(productImage, inputImage);
-	
 			//insert ProductImage
 			this.saveOrUpdate(productImage);
 			
+			productFileManager.addProductImage(productImage, inputImage);
 
 		
 		} catch (Exception e) {

@@ -31,7 +31,8 @@ public class ProductImageUrlTag extends RequestContextAwareTag {
 	private String imageName;
 	private String imageType;
 	private Product product;
-	
+	private String imageId;
+
 	@Inject
 	private FilePathUtils filePathUtils;
 
@@ -61,7 +62,7 @@ public class ProductImageUrlTag extends RequestContextAwareTag {
 			
 			imagePath
 
-				.append(imageUtils.buildProductImageUtils(merchantStore, product, this.getImageName())).toString();
+				.append(imageUtils.buildProductImageUtils(merchantStore, product, this.getImageName(), imageId)).toString();
 
 			System.out.println("Printing image " + imagePath.toString());
 
@@ -104,9 +105,12 @@ public class ProductImageUrlTag extends RequestContextAwareTag {
 		return product;
 	}
 
+	public String getImageId() {
+		return imageId;
+	}
 
-
-
-	
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
+	}
 
 }
