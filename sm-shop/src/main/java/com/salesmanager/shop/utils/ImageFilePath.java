@@ -53,8 +53,19 @@ public interface ImageFilePath {
 	 * @param imageName
 	 * @return
 	 */
-	public String buildProductImageUtils(MerchantStore store, Product product, String imageName, String imageId);
-	
+	String buildProductImageUtils(MerchantStore store, Product product, String imageName);
+
+
+	/**
+	 * Builds a product image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param store
+	 * @param product
+	 * @param imageName
+	 * @return
+	 */
+	String buildProductImageUtils(MerchantStore store, Product product, String imageName, String imageId);
+
 	/**
 	 * Builds a default product image file path that can be used by image servlet
 	 * utility for getting the physical image
@@ -108,6 +119,15 @@ public interface ImageFilePath {
 	 * @return
 	 */
 	String buildCategorymageUtils(Category category, String imageName);
+
+	/**
+	 * Builds category image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param category
+	 * @param imageName
+	 * @return
+	 */
+	String buildCategorymageUtils(Category category, String imageName, String imageId);
 
 	/**
 	 * Builds customer image file path that can be used by image servlet

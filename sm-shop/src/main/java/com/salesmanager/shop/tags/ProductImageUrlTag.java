@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
@@ -59,10 +60,9 @@ public class ProductImageUrlTag extends RequestContextAwareTag {
 			
 			String baseUrl = filePathUtils.buildRelativeStoreUri(request, merchantStore);
 			imagePath.append(baseUrl);
-			
-			imagePath
 
-				.append(imageUtils.buildProductImageUtils(merchantStore, product, this.getImageName(), imageId)).toString();
+			imagePath.append(imageUtils.buildProductImageUtils(merchantStore, product, this.getImageName(), imageId)).toString();
+
 
 			System.out.println("Printing image " + imagePath.toString());
 
