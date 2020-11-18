@@ -13,7 +13,7 @@
     http://www.springframework.org/schema/aop/spring-aop.xsd
     http://www.springframework.org/schema/util
     http://www.springframework.org/schema/util/spring-util.xsd
-    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/contexta
     http://www.springframework.org/schema/context/spring-context.xsd
     http://www.springframework.org/schema/data/jpa
     http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"> 
@@ -49,13 +49,13 @@
 	<beans:bean id="categoryFileManager"
 				class="com.salesmanager.core.business.modules.cms.category.CategoryFileManagerImpl">
 		<beans:property name="uploadImage">
-			<beans:ref bean="defaultCategoryAssetsManager" />
+			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
 		</beans:property>
 		<beans:property name="getImage">
-			<beans:ref bean="defaultCategoryAssetsManager" />
+			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
 		</beans:property>
 		<beans:property name="removeImage">
-			<beans:ref bean="defaultCategoryAssetsManager" />
+			<beans:ref bean="${config.cms.method}CategoryAssetsManager" />
 		</beans:property>
 	</beans:bean>
 
@@ -216,6 +216,14 @@
 		</beans:property>
 	</beans:bean>
 
+	<beans:bean id="digitalOceanCategoryAssetsManager"
+				class="com.salesmanager.core.business.modules.cms.category.digitalocean.DOSpaceCategoryImageFileManager" factory-method="getInstance" >
+		<!-- internal implementation -->
+		<beans:property name="cmsManager">
+			<beans:ref bean="digitalOceanAssetsManager" />
+		</beans:property>
+	</beans:bean>
+
 	<beans:bean id="digitalOceanContentAssetsManager"
 				class="com.salesmanager.core.business.modules.cms.content.aws.S3StaticContentAssetsManagerImpl" factory-method="getInstance" >
 		<beans:property name="cmsManager">
@@ -229,6 +237,7 @@
 			<beans:ref bean="digitalOceanAssetsManager" />
 		</beans:property>
 	</beans:bean>
+
 
 	<!--  end of CMS implementation for static content data -->
 
@@ -286,7 +295,7 @@
 		<beans:constructor-arg value="${config.cms.aws.region}"/>
 	</beans:bean>
 
-	<!-- aws -->
+	<!-- digital ocean -->
 	<beans:bean id="digitalOceanAssetsManager"
 				class="com.salesmanager.core.business.modules.cms.impl.DOSpaceCacheManagerImpl">
 		<beans:constructor-arg value="${config.cms.doc.base-url}"/>

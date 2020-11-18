@@ -225,7 +225,7 @@
                                 <input class="input-file" id="image" name="image" type="file">
                             </c:when>
                             <c:otherwise>
-                                <img src="<sm:categoryImage imageName="${category.categoryImage.categoryImage}" category="${category.category}"/>" width="200"/>
+                                <img src="<sm:categoryImage imageName="${category.categoryImage.categoryImage}" category="${category.category}" imageId="${category.categoryImage.id}"/>" width="200"/>
                             </c:otherwise>
                         </c:choose>
                     </div>

@@ -31,6 +31,7 @@ public class CategoryImageUrlTag extends RequestContextAwareTag {
 	private String imageName;
 	private String imageType;
 	private Category category;
+	private String imageId;
 	
 	@Inject
 	private FilePathUtils filePathUtils;
@@ -56,9 +57,7 @@ public class CategoryImageUrlTag extends RequestContextAwareTag {
 			String baseUrl = filePathUtils.buildRelativeCategoryUri(request);
 			imagePath.append(baseUrl);
 			
-			imagePath
-
-				.append(imageUtils.buildCategorymageUtils(category, imageName)).toString();
+			imagePath.append(imageUtils.buildCategorymageUtils(category, imageName, imageId)).toString();
 
 			System.out.println("Printing image " + imagePath.toString());
 
@@ -99,5 +98,13 @@ public class CategoryImageUrlTag extends RequestContextAwareTag {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
 	}
 }

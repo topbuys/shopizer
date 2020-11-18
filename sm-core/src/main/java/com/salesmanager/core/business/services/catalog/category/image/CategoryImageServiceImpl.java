@@ -40,14 +40,9 @@ public class CategoryImageServiceImpl extends SalesManagerEntityServiceImpl<Long
 
             Assert.notNull(inputImage.getFile(),"ImageContentFile.file cannot be null");
 
-
-
-            categoryFileManager.addCategoryImage(categoryImage, inputImage);
-
-            //insert ProductImage
             this.saveOrUpdate(categoryImage);
 
-
+            categoryFileManager.addCategoryImage(categoryImage, inputImage);
 
         } catch (Exception e) {
             throw new ServiceException(e);

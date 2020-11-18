@@ -343,6 +343,12 @@
         <type>com.salesmanager.core.model.catalog.category.Category</type>
     </attribute>
 
+    <attribute>
+        <name>imageId</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.lang.String</type>
+    </attribute>
 
 </tag>
 

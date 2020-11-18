@@ -48,8 +48,8 @@ public class DOSpaceProductContentFileManager
 
   private static DOSpaceProductContentFileManager fileManager = null;
 
-  private static String DEFAULT_BUCKET_NAME = "shopizer-content";
-  private static String DEFAULT_REGION_NAME = "us-east-1";
+  private static String DEFAULT_BUCKET_NAME = "topbuys";
+  private static String DEFAULT_REGION_NAME = "fra1";
   private static final String ROOT_NAME = "products";
 
   private static final char UNIX_SEPARATOR = '/';
