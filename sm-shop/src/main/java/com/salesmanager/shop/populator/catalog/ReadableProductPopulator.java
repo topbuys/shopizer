@@ -229,7 +229,7 @@ public class ReadableProductPopulator extends
 					prdImage.setDefaultImage(img.isDefaultImage());
 
 					StringBuilder imgPath = new StringBuilder();
-					imgPath.append(contextPath).append(imageUtils.buildProductImageUtils(store, source.getSku(), img.getProductImage()));
+					imgPath.append(contextPath).append(imageUtils.buildProductImageUtils(store, source, img.getProductImage(), String.valueOf(img.getId())));
 
 					prdImage.setImageUrl(imgPath.toString());
 					prdImage.setId(img.getId());

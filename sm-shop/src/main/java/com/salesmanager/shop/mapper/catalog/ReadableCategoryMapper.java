@@ -68,7 +68,7 @@ public class ReadableCategoryMapper implements Mapper<Category, ReadableCategory
         catImage.setDefaultImage(img.isDefaultImage());
 
         StringBuilder imgPath = new StringBuilder();
-        imgPath.append(contextPath).append(imageUtils.buildCategorymageUtils(source, img.getCategoryImage()));
+        imgPath.append(contextPath).append(imageUtils.buildCategorymageUtils(source, img.getCategoryImage(), String.valueOf(img.getId())));
 
         catImage.setImageUrl(imgPath.toString());
 
