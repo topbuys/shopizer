@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.transaction.Transactional;
+
 /**
  * @author Mostafa Saied <mostafa.saied.fci@gmail.com>
  */
@@ -33,6 +35,7 @@ public class CategoryImageServiceImpl extends SalesManagerEntityServiceImpl<Long
     }
 
     @Override
+    @Transactional
     public void addCategoryImage(Category category, CategoryImage categoryImage, ImageContentFile inputImage) throws ServiceException {
         categoryImage.setCategory(category);
 
