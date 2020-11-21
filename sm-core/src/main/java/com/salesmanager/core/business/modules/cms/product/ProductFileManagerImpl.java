@@ -289,7 +289,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
   @Override
   public void removeProductImage(ProductImage productImage) throws ServiceException {
 
-    this.removeImage.removeProductImage(productImage);
+    this.removeImage.removeProductImage(productImage, FileContentType.PRODUCT);
+
+    this.removeImage.removeProductImage(productImage, FileContentType.PRODUCTLG);
 
     /*
      * ProductImage large = new ProductImage(); large.setProduct(productImage.getProduct());

@@ -13,13 +13,14 @@ import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.content.FileContentType;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.shop.constants.Constants;
-
-
-
+import org.springframework.beans.factory.annotation.Value;
 
 
 public abstract class AbstractimageFilePath implements ImageFilePath {
 
+	private final String DIGITAL_OCEAN = "digitalOcean";
+
+	private String cmsMethod = "";
 
 	public abstract String getBasePath();
 
@@ -36,6 +37,14 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 
 	public void setProperties(Properties properties) {
 		this.properties = properties;
+	}
+
+	public String getCmsMethod() {
+		return cmsMethod;
+	}
+
+	public void setCmsMethod(String cmsMethod) {
+		this.cmsMethod = cmsMethod;
 	}
 
 	/**
@@ -84,7 +93,7 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 				.append(manufacturer.getId()).append(Constants.SLASH)
 				.append(imageName).toString();
 	}
-	
+
 	/**
 	 * Builds a product image file path that can be used by image servlet
 	 * utility for getting the physical image
@@ -96,6 +105,25 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 	public String buildProductImageUtils(MerchantStore store, Product product, String imageName) {
 		return new StringBuilder().append(getBasePath()).append(Constants.PRODUCTS_URI).append(Constants.SLASH).append(store.getCode()).append(Constants.SLASH)
 				.append(product.getSku()).append(Constants.SLASH).append(Constants.SMALL_IMAGE).append(Constants.SLASH).append(imageName).toString();
+	}
+
+
+	/**
+	 * Builds a product image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param store
+	 * @param product
+	 * @param imageName
+	 * @return
+	 */
+	public String buildProductImageUtils(MerchantStore store, Product product, String imageName, String imageId) {
+		if (cmsMethod.equals(DIGITAL_OCEAN)) {
+			return new StringBuilder().append(getBasePath()).append(Constants.PRODUCTS_URI).append(Constants.SLASH).append(store.getCode()).append(Constants.SLASH)
+					.append(product.getSku()).append(Constants.SLASH).append(Constants.SMALL_IMAGE).append(Constants.SLASH).append(imageId).append(Constants.SLASH).append(imageName).toString();
+
+		} else {
+			return buildProductImageUtils(store, product, imageName);
+		}
 	}
 	
 	/**
@@ -176,6 +204,22 @@ public abstract class AbstractimageFilePath implements ImageFilePath {
 	public String buildCategorymageUtils(Category category, String imageName) {
 		return new StringBuilder().append(getBasePath()).append(Constants.CATEGORY_URI).append(Constants.SLASH).append(category.getCode()).append(Constants.SLASH)
 				.append(imageName).toString();
+	}
+
+	/**
+	 * Builds category image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param category
+	 * @param imageName
+	 * @return
+	 */
+	public String buildCategorymageUtils(Category category, String imageName, String imageId) {
+		if (cmsMethod.equals(DIGITAL_OCEAN)) {
+			return new StringBuilder().append(getBasePath()).append(Constants.CATEGORY_URI).append(Constants.SLASH).append(category.getCode()).append(Constants.SLASH)
+					.append(imageId).append(Constants.SLASH).append(imageName).toString();
+		} else {
+			return buildCategorymageUtils(category, imageName);
+		}
 	}
 
 	/**

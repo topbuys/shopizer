@@ -21,17 +21,19 @@ public class LocationImageConfig {
   @Value("${config.cms.static.path}")
   private String staticPath;
 
-  @Bean
+    @Bean
   public ImageFilePath img() {
 	  
 	if(!StringUtils.isEmpty(method) && !method.equals("default")) {
 	    CloudFilePathUtils cloudFilePathUtils = new CloudFilePathUtils();
 	    cloudFilePathUtils.setBasePath(contentUrl);
+	    cloudFilePathUtils.setCmsMethod(method);
 	    return cloudFilePathUtils;
 
 	} else {
 	    LocalImageFilePathUtils localImageFilePathUtils = new LocalImageFilePathUtils();
 	    localImageFilePathUtils.setBasePath(staticPath);
+	    localImageFilePathUtils.setCmsMethod(method);
 	    return localImageFilePathUtils;
 	}
 	  

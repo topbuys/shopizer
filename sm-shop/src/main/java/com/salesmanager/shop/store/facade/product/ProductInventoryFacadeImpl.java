@@ -23,7 +23,7 @@ import com.salesmanager.shop.store.api.exception.ServiceRuntimeException;
 import com.salesmanager.shop.store.controller.product.facade.ProductInventoryFacade;
 
 @Service("productInventoryFacade")
-@Profile({"default", "cloud", "gcp", "aws", "mysql"})
+@Profile({"default", "cloud", "gcp", "aws", "mysql", "doc-dev"})
 public class ProductInventoryFacadeImpl implements ProductInventoryFacade {
 
   @Autowired

@@ -13,8 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 public interface ContentAssetsManager extends AssetsManager, FileGet, FilePut, FileRemove, FolderPut, FolderList, FolderRemove, Serializable {
     public static final char UNIX_SEPARATOR = '/';
     public static final char WINDOWS_SEPARATOR = '\\';
-    public static String DEFAULT_BUCKET_NAME = "shopizer";
-    public static String DEFAULT_REGION_NAME = "us-east-1";
+    public static String DEFAULT_BUCKET_NAME = "topbuys";
+    public static String DEFAULT_REGION_NAME = "fra1";
     public static final String ROOT_NAME = "files";
 
     CMSManager getCmsManager();

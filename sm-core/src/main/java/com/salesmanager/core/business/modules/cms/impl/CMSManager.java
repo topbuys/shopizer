@@ -12,4 +12,7 @@ public interface CMSManager {
 
   String getLocation();
 
+  default String getBaseUrl() {
+    return "";
+  }
 }
