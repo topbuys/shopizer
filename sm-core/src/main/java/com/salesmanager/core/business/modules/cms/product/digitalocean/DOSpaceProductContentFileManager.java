@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -60,6 +61,8 @@ public class DOSpaceProductContentFileManager
   private final static String LARGE = "LARGE";
 
   private CMSManager cmsManager;
+
+  private AmazonS3 s3Client;
 
   public static DOSpaceProductContentFileManager getInstance() {
 
@@ -284,13 +287,9 @@ public class DOSpaceProductContentFileManager
     return b;
   }
 
-  /**
-   * Builds an amazon S3 client
-   * 
-   * @return
-   */
-  private AmazonS3 s3Client() {
-    AmazonS3 s3 = AmazonS3ClientBuilder
+  @PostConstruct
+  private void initializeS3Client() {
+    this.s3Client = AmazonS3ClientBuilder
             .standard()
             .withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(
@@ -298,8 +297,15 @@ public class DOSpaceProductContentFileManager
                             regionName()))
             .withCredentials(new EnvironmentVariableCredentialsProvider())
             .build();
+  }
 
-    return s3;
+  /**
+   * Builds an amazon S3 client
+   *
+   * @return
+   */
+  private AmazonS3 s3Client() {
+    return s3Client;
   }
 
   private String bucketName() {

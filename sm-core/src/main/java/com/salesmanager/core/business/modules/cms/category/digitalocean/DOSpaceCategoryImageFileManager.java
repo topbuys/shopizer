@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class DOSpaceCategoryImageFileManager
   private final static String LARGE = "LARGE";
 
   private CMSManager cmsManager;
+
+  private AmazonS3 s3Client;
 
   public static DOSpaceCategoryImageFileManager getInstance() {
 
@@ -166,13 +169,9 @@ public class DOSpaceCategoryImageFileManager
     return b;
   }
 
-  /**
-   * Builds an amazon S3 client
-   * 
-   * @return
-   */
-  private AmazonS3 s3Client() {
-    AmazonS3 s3 = AmazonS3ClientBuilder
+  @PostConstruct
+  private void initializeS3Client() {
+    this.s3Client = AmazonS3ClientBuilder
             .standard()
             .withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(
@@ -180,8 +179,15 @@ public class DOSpaceCategoryImageFileManager
                             regionName()))
             .withCredentials(new EnvironmentVariableCredentialsProvider())
             .build();
+  }
 
-    return s3;
+  /**
+   * Builds an amazon S3 client
+   * 
+   * @return
+   */
+  private AmazonS3 s3Client() {
+    return this.s3Client;
   }
 
   private String bucketName() {
